@@ -98,7 +98,11 @@ Required JSON format:
 
 重要ルール:
 - is_consolidated: シート名・タイトル・勘定科目に「連結」「Consolidated」「合算」などが含まれる場合は true。単体（individual/standalone）のみ false。
-- 各 detail フィールドには必ずシート種別とシート名を「PL:シート名」または「BS:シート名」の形式で先頭に付けること（損益計算書系はPL:、貸借対照表系はBS:）。
+- 各 detail フィールドには必ずシート種別とシート名を先頭に付けること。形式は「PL:シート名 — 」または「BS:シート名 — 」。損益計算書（Income Statement, P&L）から取得した値はPL:、貸借対照表（Balance Sheet）から取得した値はBS:とする。
+- 例: cash_detail → "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54"
+- 例: income_before_tax のdetailフィールドがあれば → "PL:YTD — Pre Tax Profit行から取得"
+- total_assets_detail → "BS:YTD — Total Assets行から直接取得 $61,913,640.00"
+- is_consolidated が true の場合、consolidated_note には「BS:シート名、PL:シート名 — 〇〇として記載」の形式で、BS/PLそれぞれのシート名と連結と判断した根拠のみを記載する。余分な説明は不要。
 - total_assets は必ずバランスシートの「Total Assets」行から直接取得すること。Cash+Inventory+Equipment+Premises+Other の合算で計算しないこと。
 - 金額はすべて小数第2位まで（例: 61913640.12）
 """

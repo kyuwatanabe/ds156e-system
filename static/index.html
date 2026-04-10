@@ -17,7 +17,7 @@
 
   header{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;gap:10px;height:48px;}
   header h1{font-size:15px;font-weight:500;}
-  .version{font-family:var(--mono);font-size:11px;color:var(--text2);}
+  .version{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:3px;flex:1;}
 
   .layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 48px);}
 
@@ -26,6 +26,7 @@
   .lbl{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:7px;display:flex;align-items:center;gap:7px;}
   .lbl::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px;}
 
+  /* UPLOAD */
   .upload-zone{border:2px dashed var(--border);border-radius:8px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);user-select:none;}
   .upload-zone.drag-over{border-color:var(--accent);background:rgba(79,124,255,.08);border-style:solid;}
   .upload-zone.has-file{border-color:var(--accent2);border-style:solid;background:rgba(0,212,170,.05);}
@@ -36,18 +37,22 @@
   .upload-fn{font-family:var(--mono);font-size:12px;color:var(--accent2);margin-top:8px;word-break:break-all;display:none;}
   .upload-fn.show{display:block;}
 
-  .comment-wrap{flex:1;display:flex;flex-direction:column;min-height:0;}
+  /* COMMENT */
+  .comment-wrap{flex:1;display:flex;flex-direction:column;min-height:0;gap:8px;}
   #commentInput{flex:1;width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.65;padding:11px;resize:none;outline:none;transition:border-color .2s;}
   #commentInput:focus{border-color:var(--accent);}
-  .comment-hint{font-size:12px;color:var(--text2);margin-top:6px;}
 
-  .btn-s{width:100%;padding:12px;background:transparent;color:var(--accent2);border:1px solid var(--accent2);border-radius:6px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;}
-  .btn-s:hover:not(:disabled){background:rgba(0,212,170,.08);}
-  .btn-s:disabled{opacity:.35;cursor:not-allowed;}
+  /* BUTTONS */
+  .btn-send{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;}
+  .btn-send:hover:not(:disabled){background:#3d6aee;}
+  .btn-send:disabled{background:var(--border);color:var(--text2);cursor:not-allowed;}
+
+  .btn-pdf{width:100%;padding:11px;background:transparent;color:var(--accent2);border:1px solid var(--accent2);border-radius:6px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;}
+  .btn-pdf:hover:not(:disabled){background:rgba(0,212,170,.08);}
+  .btn-pdf:disabled{opacity:.35;cursor:not-allowed;}
 
   .status{font-size:12px;padding:7px 11px;border-radius:4px;font-family:var(--mono);display:none;flex-shrink:0;}
   .status.err{background:rgba(255,107,107,.1);color:var(--error);border:1px solid rgba(255,107,107,.3);display:block;}
-  .status.ok{background:rgba(0,212,170,.1);color:var(--accent2);border:1px solid rgba(0,212,170,.3);display:block;}
   .status.loading{background:rgba(255,140,66,.1);color:var(--warn);border:1px solid rgba(255,140,66,.3);display:flex;align-items:center;gap:8px;}
 
   /* RIGHT */
@@ -81,7 +86,7 @@
   .fi[readonly]{color:var(--text2);}
   .cv{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--accent2);padding:4px 0 2px;}
 
-  /* #12 detail table */
+  /* #12 table */
   .detail-table{width:100%;border-collapse:collapse;}
   .detail-table th{padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);background:var(--surface2);font-weight:600;border-bottom:1px solid var(--border);}
   .detail-table th.right{text-align:right;}
@@ -90,11 +95,10 @@
   .td-item{font-size:14px;font-weight:600;white-space:nowrap;}
   .td-val{font-family:var(--mono);font-size:15px;font-weight:600;text-align:right;white-space:nowrap;}
   .td-src{font-size:13px;color:var(--text2);line-height:1.6;}
+  .td-src .sheet-tag{font-family:var(--mono);font-size:12px;background:var(--surface2);border:1px solid var(--border);padding:1px 6px;border-radius:3px;color:var(--accent);margin-right:6px;white-space:nowrap;}
   .row-other .td-val{color:var(--warn);}
   .row-total td{background:var(--surface2);}
-  .row-total .td-item{font-size:14px;}
   .row-total .td-val{color:var(--accent2);font-size:16px;}
-  .row-total .td-src{font-size:12px;}
 
   .nb{padding:8px 14px;font-size:12px;color:var(--warn);background:rgba(255,140,66,.06);border-top:1px solid var(--border);font-family:var(--mono);display:none;}
 
@@ -113,8 +117,9 @@
 
   <!-- LEFT -->
   <div class="left">
+
     <div>
-      <div class="lbl">① 財務諸表 Excel</div>
+      <div class="lbl">財務諸表</div>
       <div class="upload-zone" id="uploadZone">
         <div class="upload-icon">📊</div>
         <div class="upload-main">クリックまたはドラッグ＆ドロップ</div>
@@ -125,12 +130,14 @@
     </div>
 
     <div class="comment-wrap">
-      <div class="lbl">② 抽出ルールの補足</div>
+      <div class="lbl">抽出ルールの修正</div>
       <textarea id="commentInput" placeholder="例：&#10;・バランスシートは「BS」シートにある&#10;・単位は千円（実額に換算してください）&#10;・Inventoryは「製品」と「仕掛品」の合計&#10;・Owner's Equityは「純資産合計」の行"></textarea>
-      <div class="comment-hint">💡 財務諸表のスタイルが標準と異なる場合に記入</div>
+      <button class="btn-send" id="sendBtn" disabled onclick="sendComment()">
+        送信して再抽出
+      </button>
     </div>
 
-    <button class="btn-s" id="pdfBtn" disabled onclick="generatePdf()">
+    <button class="btn-pdf" id="pdfBtn" disabled onclick="generatePdf()">
       📄 DS-156E PDF を出力
     </button>
 
@@ -148,7 +155,7 @@
     <!-- CONSOLIDATED WARNING -->
     <div class="consolidated-warn" id="consolidatedWarn">
       <span class="warn-icon">⚠️</span>
-      <span>連結財務諸表か確認してください： </span><span id="consolidatedNote"></span>
+      <span>連結財務諸表か確認してください：</span><span id="consolidatedNote"></span>
     </div>
 
     <div id="resultsArea" style="display:none;flex-direction:column;gap:12px;">
@@ -191,7 +198,7 @@
         <table class="detail-table">
           <thead>
             <tr>
-              <th style="width:120px">項目</th>
+              <th style="width:110px">項目</th>
               <th class="right" style="width:160px">金額</th>
               <th>使用した数値と計算根拠</th>
             </tr>
@@ -216,14 +223,14 @@
 </div>
 
 <script>
-// Version: MM/DD HH:MM
+// Version
 (function(){
   const now = new Date();
   const mm = String(now.getMonth()+1).padStart(2,'0');
   const dd = String(now.getDate()).padStart(2,'0');
   const hh = String(now.getHours()).padStart(2,'0');
   const mi = String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('versionLabel').textContent = `v1.3  ${mm}/${dd} ${hh}:${mi}`;
+  document.getElementById('versionLabel').textContent = `v1.4  ${mm}/${dd} ${hh}:${mi}`;
 })();
 
 let selectedFile = null;
@@ -252,7 +259,6 @@ zone.addEventListener('drop', e => {
 
 function acceptFile(file) {
   selectedFile = file;
-  zone.classList.remove('has-file');
   zone.classList.add('has-file');
   const fn = document.getElementById('uploadFn');
   fn.textContent = '📎 ' + file.name;
@@ -261,12 +267,10 @@ function acceptFile(file) {
   extractData();
 }
 
-// ── Extract ─────────────────────────────────────────
+// ── Extract (file upload) ────────────────────────────
 async function extractData() {
   if (!selectedFile) return;
-  zone.classList.add('loading');
-  setStatus('抽出中...', 'loading');
-  document.getElementById('pdfBtn').disabled = true;
+  setLoading(true);
 
   const fd = new FormData();
   fd.append('file', selectedFile);
@@ -275,14 +279,33 @@ async function extractData() {
   try {
     const res = await fetch('/extract', { method:'POST', body:fd });
     if (!res.ok) { const e = await res.json(); throw new Error(e.detail || 'エラー'); }
-    const data = await res.json();
-    displayData(data);
-    setStatus('✓ 抽出完了', 'ok');
+    displayData(await res.json());
     document.getElementById('pdfBtn').disabled = false;
+    document.getElementById('sendBtn').disabled = false;
   } catch(e) {
     setStatus('エラー: ' + e.message, 'err');
   } finally {
-    zone.classList.remove('loading');
+    setLoading(false);
+  }
+}
+
+// ── Send comment (re-extract) ────────────────────────
+async function sendComment() {
+  if (!selectedFile) return;
+  setLoading(true);
+
+  const fd = new FormData();
+  fd.append('file', selectedFile);
+  fd.append('comment', document.getElementById('commentInput').value);
+
+  try {
+    const res = await fetch('/extract', { method:'POST', body:fd });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.detail || 'エラー'); }
+    displayData(await res.json());
+  } catch(e) {
+    setStatus('エラー: ' + e.message, 'err');
+  } finally {
+    setLoading(false);
   }
 }
 
@@ -310,7 +333,6 @@ function displayData(data) {
   setFld('f_income_before', fmtInput(data.income_before_tax));
   setFld('f_income_after',  fmtInput(data.income_after_tax));
 
-  // notes
   if (data.notes) {
     const nb = document.getElementById('notesBar');
     nb.textContent = '⚠ ' + data.notes;
@@ -318,27 +340,36 @@ function displayData(data) {
   }
 
   // #12
-  const assets = data.total_assets    || 0;
-  const cash   = data.cash            || 0;
-  const inv    = data.inventory       || 0;
-  const eqp    = data.equipment       || 0;
-  const pre    = data.premises        || 0;
+  const assets = data.total_assets || 0;
+  const cash   = data.cash        || 0;
+  const inv    = data.inventory   || 0;
+  const eqp    = data.equipment   || 0;
+  const pre    = data.premises    || 0;
   const oth    = assets - cash - inv - eqp - pre;
 
-  setText('d_cash', fmt(cash));  setText('s_cash', data.cash_detail     || '—');
-  setText('d_inv',  fmt(inv));   setText('s_inv',  data.inventory_detail || '—');
-  setText('d_eqp',  fmt(eqp));   setText('s_eqp',  data.equipment_detail || '—');
-  setText('d_pre',  fmt(pre));   setText('s_pre',  data.premises_detail  || '—');
-  setText('d_oth',  fmt(oth));   setText('s_oth',  data.other_detail     || 'Total Assets − Cash − Inventory − Equipment − Premises');
-  setText('d_tot',  fmt(assets));
-  setText('s_tot',  data.total_assets_detail || 'Balance Sheet の Total Assets 行から直接取得');
+  setText('d_cash', fmt(cash));  renderSrc('s_cash', data.cash_detail);
+  setText('d_inv',  fmt(inv));   renderSrc('s_inv',  data.inventory_detail);
+  setText('d_eqp',  fmt(eqp));   renderSrc('s_eqp',  data.equipment_detail);
+  setText('d_pre',  fmt(pre));   renderSrc('s_pre',  data.premises_detail);
+  setText('d_oth',  fmt(oth));   renderSrc('s_oth',  data.other_detail || 'Total Assets − Cash − Inventory − Equipment − Premises');
+  setText('d_tot',  fmt(assets)); renderSrc('s_tot', data.total_assets_detail);
 
   recalc();
 }
 
+// ソーステキストをレンダリング（BS:/PL: タグをハイライト）
+function renderSrc(id, text) {
+  const el = document.getElementById(id);
+  if (!text) { el.textContent = '—'; return; }
+  // "BS:XXX" or "PL:XXX" を span でラップ
+  const html = text.replace(/\b(BS|PL):([^\s—\-,]+)/g, '<span class="sheet-tag">$1:$2</span>');
+  el.innerHTML = html;
+}
+
 // ── Recalculate ──────────────────────────────────────
 function parseNum(id) {
-  return parseFloat((document.getElementById(id).value || '0').replace(/,/g,'').replace(/\$/g,'')) || 0;
+  return parseFloat((document.getElementById(id).value || '0').replace(/,/g,'').replace(/\$/g,'').replace(/-/g,'') || '0') *
+    (document.getElementById(id).value.startsWith('-') ? -1 : 1);
 }
 
 function recalc() {
@@ -351,7 +382,7 @@ function recalc() {
   const note = equity < 0
     ? `Owner's Equity が負 (${fmt(equity)}) のため\nTotal Assets (${fmt(assets)}) × 3`
     : `Owner's Equity (${fmt(equity)}) × 3`;
-  setText('f_fmv',      fmt(fmv));
+  setText('f_fmv', fmt(fmv));
   setText('f_fmv_note', note);
 
   if (extractedData) {
@@ -397,6 +428,13 @@ function fmtInput(n) {
 
 function setFld(id, val) { document.getElementById(id).value = val; }
 function setText(id, val) { document.getElementById(id).textContent = val; }
+
+function setLoading(on) {
+  zone.classList.toggle('loading', on);
+  document.getElementById('sendBtn').disabled = on;
+  if (!on) setStatus('', '');
+  else setStatus('抽出中...', 'loading');
+}
 
 function setStatus(msg, type) {
   const el = document.getElementById('statusMsg');
