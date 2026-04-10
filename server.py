@@ -187,7 +187,7 @@ def get_default_prompt():
 @app.post("/extract")
 async def extract_financial_data(
     file: UploadFile = File(...),
-    system_prompt: str = Form(DEFAULT_SYSTEM_PROMPT),
+    comment: str = Form(""),
 ):
     """ExcelファイルからClaudeを使って財務データを抽出"""
     if not ANTHROPIC_API_KEY:
@@ -199,7 +199,11 @@ async def extract_financial_data(
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Excelファイルの読み込みエラー: {str(e)}")
 
-    clean_prompt = extract_system_prompt(system_prompt)
+    clean_prompt = extract_system_prompt(DEFAULT_SYSTEM_PROMPT)
+
+    user_message = f"以下のExcelデータから財務情報を抽出してください:\n\n{excel_text}"
+    if comment.strip():
+        user_message += f"\n\n【補足指示】\n{comment.strip()}"
 
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
     message = client.messages.create(
@@ -209,7 +213,7 @@ async def extract_financial_data(
         messages=[
             {
                 "role": "user",
-                "content": f"以下のExcelデータから財務情報を抽出してください:\n\n{excel_text}"
+                "content": user_message
             }
         ],
     )
