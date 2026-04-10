@@ -131,7 +131,7 @@
 
     <div class="comment-wrap">
       <div class="lbl">抽出ルールの修正</div>
-      <textarea id="commentInput" placeholder="例：&#10;・バランスシートは「BS」シートにある&#10;・単位は千円（実額に換算してください）&#10;・Inventoryは「製品」と「仕掛品」の合計&#10;・Owner's Equityは「純資産合計」の行"></textarea>
+      <textarea id="commentInput" placeholder="財務諸表のスタイルが標準と異なる場合に記入してください"></textarea>
       <button class="btn-send" id="sendBtn" disabled onclick="sendComment()">
         送信して再抽出
       </button>
@@ -155,17 +155,16 @@
     <!-- CONSOLIDATED WARNING -->
     <div class="consolidated-warn" id="consolidatedWarn">
       <span class="warn-icon">⚠️</span>
-      <span>連結財務諸表か確認してください：</span><span id="consolidatedNote"></span>
+      <span>単体の財務諸表か確認してください：</span><span id="consolidatedNote"></span>
     </div>
 
     <div id="resultsArea" style="display:none;flex-direction:column;gap:12px;">
 
       <!-- #9 -->
       <div class="rb">
-        <div class="rh"><span class="badge b9">#9</span> Financial Statement</div>
-        <div class="frow c4">
+        <div class="rh"><span class="badge b9">#9</span></div>
+        <div class="frow c3">
           <div class="fc"><div class="fl">Year</div><input class="fi" id="f_year" type="text" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Currency</div><input class="fi" id="f_currency" type="text" readonly></div>
           <div class="fc"><div class="fl">Before Tax Income</div><input class="fi" id="f_income_before" type="text" oninput="recalc()"></div>
           <div class="fc"><div class="fl">After Tax Income</div><input class="fi" id="f_income_after" type="text" oninput="recalc()"></div>
         </div>
@@ -179,7 +178,7 @@
 
       <!-- #11 -->
       <div class="rb">
-        <div class="rh"><span class="badge b11">#11</span> Type of Investment — Continuation of an existing business</div>
+        <div class="rh"><span class="badge b11">#11</span></div>
         <div class="frow c2">
           <div class="fc">
             <div class="fl">Fair Market Value of Business（自動計算）</div>
@@ -194,7 +193,7 @@
 
       <!-- #12 -->
       <div class="rb">
-        <div class="rh"><span class="badge b12">#12</span> Total Investment from Abroad — Cumulative</div>
+        <div class="rh"><span class="badge b12">#12</span></div>
         <table class="detail-table">
           <thead>
             <tr>
@@ -326,7 +325,6 @@ function displayData(data) {
 
   // #9
   setFld('f_year',          data.year || '');
-  setFld('f_currency',      data.currency || 'USD');
   setFld('f_assets',        fmtInput(data.total_assets));
   setFld('f_liabilities',   fmtInput(data.total_liabilities));
   setFld('f_equity',        fmtInput(data.owners_equity));

@@ -63,6 +63,9 @@ DEFAULT_SYSTEM_PROMPT = """\
 # - 金額はUSDで返す
 # - 日本円の場合は currency を "JPY" にする
 # - 単位が「千円」「百万円」の場合は実額に換算する
+# - ヘッダーや注記に "thds", "thousands", "in thousands", "($ thousands)" などの記載がある場合は、
+#   すべての金額に1000を掛けて実額に換算する
+# - "($ millions)" などの場合は1,000,000を掛ける
 #
 # 【複数シートがある場合】
 # - YTD（Year to Date）または年間合計シートを優先する
@@ -87,7 +90,7 @@ Required JSON format:
   "currency": "USD",
   "notes": "抽出時の特記事項があれば記載",
   "is_consolidated": false,
-  "consolidated_note": "連結財務諸表の場合はその旨を記載。単体の場合は空文字",
+  "consolidated_note": "is_consolidated=trueの場合: 'BS:シート名、PL:シート名 — 〇〇として記載'。falseの場合は空文字",
   "cash_detail": "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54",
   "inventory_detail": "BS:YTD — Inventory (gross) $5,617,918.00 (Inventory Reserve は除外)",
   "equipment_detail": "BS:YTD — Plant & Equipment (gross) $6,546,970.00 (Accumulated Depreciation は除外)",
@@ -102,7 +105,8 @@ Required JSON format:
 - 例: cash_detail → "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54"
 - 例: income_before_tax のdetailフィールドがあれば → "PL:YTD — Pre Tax Profit行から取得"
 - total_assets_detail → "BS:YTD — Total Assets行から直接取得 $61,913,640.00"
-- is_consolidated が true の場合、consolidated_note には「BS:シート名、PL:シート名 — 〇〇として記載」の形式で、BS/PLそれぞれのシート名と連結と判断した根拠のみを記載する。余分な説明は不要。
+- is_consolidated が true の場合、consolidated_note には「BS:シート名、PL:シート名 — 〇〇として記載」の形式で記載する。シート名は実際にBS/PLのデータを取得したシートのみを記載すること（他のシートのシート名は含めない）。連結と判断した根拠（例：Consolidated Income Statement として記載）のみを簡潔に示す。
+- total_assets_detail など各detailフィールドのシート名も、実際にその数値を取得したシートのみを記載する。関係のないシートのシート名を含めないこと。
 - total_assets は必ずバランスシートの「Total Assets」行から直接取得すること。Cash+Inventory+Equipment+Premises+Other の合算で計算しないこと。
 - 金額はすべて小数第2位まで（例: 61913640.12）
 """
