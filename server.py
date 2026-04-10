@@ -157,7 +157,10 @@ def fill_pdf(data: dict) -> bytes:
     equipment = float(data.get("equipment", 0) or 0)
     premises  = float(data.get("premises", 0) or 0)
     other     = assets - cash - inventory - equipment - premises
-    fmv       = assets * 3 if equity < 0 else equity * 3
+    fmv_raw   = assets * 3 if equity < 0 else equity * 3
+    # 上3桁: 百万単位に切り捨て (例: 185,740,920 → 185,000,000)
+    import math
+    fmv       = math.floor(fmv_raw / 1_000_000) * 1_000_000
 
     year_str    = str(data.get("year", ""))
     fy_end      = str(data.get("fiscal_year_end", "12/31"))
@@ -181,9 +184,9 @@ def fill_pdf(data: dict) -> bytes:
     }
     # Calendar Year か Fiscal Year かを判定して追加
     if is_calendar:
-        checkbox_fields = {"FinCY", "ExBus", "TotCY"}
+        checkbox_fields = {"FinCY", "ExBus", "TotCY", "HistCash"}
     else:
-        checkbox_fields = {"FinCY", "ExBus", "TotFY"}
+        checkbox_fields = {"FinCY", "ExBus", "TotFY", "HistCash"}
 
     # テキストフィールド: update_page_form_field_values (auto_regenerate=False)
     for page in writer.pages:

@@ -74,9 +74,9 @@
   .empty p{font-size:13px;}
 
   /* CONSOLIDATED WARNING */
-  .consolidated-warn{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.4);border-radius:6px;padding:10px 14px;display:none;flex-shrink:0;align-items:center;gap:8px;font-size:13px;color:#ffb3b3;}
-  .consolidated-warn.show{display:flex;}
-  .warn-icon{font-size:16px;flex-shrink:0;}
+  .sheet-info{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;flex-shrink:0;display:flex;align-items:center;gap:8px;font-size:13px;font-family:var(--mono);color:var(--text2);}
+  .sheet-info.consolidated{color:#ffb3b3;border-color:rgba(255,107,107,.4);background:rgba(255,107,107,.08);}
+  .warn-icon{font-size:15px;flex-shrink:0;}
 
   /* RESULT BLOCKS */
   .rb{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;flex-shrink:0;}
@@ -164,10 +164,10 @@
       <p>Excelをアップロードすると自動で財務データを抽出します</p>
     </div>
 
-    <!-- CONSOLIDATED WARNING -->
-    <div class="consolidated-warn" id="consolidatedWarn">
-      <span class="warn-icon">⚠️</span>
-      <span id="consolidatedNote" style="white-space:pre-line;"></span>
+    <!-- SHEET INFO / CONSOLIDATED WARNING -->
+    <div class="sheet-info" id="consolidatedWarn" style="display:none;">
+      <span class="warn-icon" id="warnIcon"></span>
+      <span id="consolidatedNote"></span>
     </div>
 
     <div id="resultsArea" style="display:none;flex-direction:column;gap:12px;">
@@ -184,7 +184,7 @@
           <tr>
             <td class="lbl">Total Assets of U.S. Business</td>
             <td class="val"><input class="form-val" id="f_assets" type="text" oninput="recalc()"></td>
-            <td class="tag">☑ Current Cash</td>
+            <td class="tag">☑ Historical Cost</td>
           </tr>
           <tr>
             <td class="lbl">Total Liabilities</td>
@@ -208,22 +208,18 @@
             </td>
           </tr>
         </table>
-        <div class="nb" id="notesBar"></div>
       </div>
 
       <!-- #11 -->
       <div class="rb">
         <div class="rh"><span class="badge b11">#11</span></div>
-        <div class="frow c2">
-          <div class="fc">
-            <div class="fl">Fair Market Value of Business（自動計算）</div>
-            <div class="cv" id="f_fmv">—</div>
-          </div>
-          <div class="fc">
-            <div class="fl">計算根拠</div>
-            <div style="font-size:13px;color:var(--text2);padding-top:6px;white-space:pre-line;" id="f_fmv_note"></div>
-          </div>
-        </div>
+        <table class="form-tbl">
+          <tr>
+            <td class="lbl">Fair Market Value of Business</td>
+            <td class="val"><div class="cv" id="f_fmv" style="padding:3px 0;">—</div></td>
+            <td style="font-size:12px;color:var(--text2);white-space:pre-line;padding:9px 14px;" id="f_fmv_note"></td>
+          </tr>
+        </table>
       </div>
 
       <!-- #12 -->
@@ -234,7 +230,7 @@
             <tr>
               <th style="width:110px">項目</th>
               <th class="right" style="width:160px">金額</th>
-              <th>使用した数値と計算根拠</th>
+              <th>備考</th>
             </tr>
           </thead>
           <tbody>
@@ -242,7 +238,7 @@
             <tr><td class="td-item">Inventory</td><td class="td-val" id="d_inv">—</td><td class="td-src" id="s_inv">—</td></tr>
             <tr><td class="td-item">Equipment</td><td class="td-val" id="d_eqp">—</td><td class="td-src" id="s_eqp">—</td></tr>
             <tr><td class="td-item">Premises</td><td class="td-val" id="d_pre">—</td><td class="td-src" id="s_pre">—</td></tr>
-            <tr class="row-other"><td class="td-item">Other</td><td class="td-val" id="d_oth">—</td><td class="td-src" id="s_oth">—</td></tr>
+            <tr class="row-other"><td class="td-item">Other</td><td class="td-val" id="d_oth">—</td><td class="td-src" id="s_oth"></td></tr>
             <tr class="row-total">
               <td class="td-item">TOTAL</td>
               <td class="td-val" id="d_tot">—</td>
@@ -349,13 +345,21 @@ function displayData(data) {
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('resultsArea').style.display = 'flex';
 
-  // 連結警告
+  // シート情報 / 連結警告
   const warn = document.getElementById('consolidatedWarn');
-  if (data.is_consolidated) {
-    warn.classList.add('show');
-    document.getElementById('consolidatedNote').textContent = data.consolidated_note || '';
+  const note = data.consolidated_note || '';
+  if (note) {
+    warn.style.display = 'flex';
+    document.getElementById('consolidatedNote').textContent = note;
+    if (data.is_consolidated) {
+      warn.classList.add('consolidated');
+      document.getElementById('warnIcon').textContent = '⚠️';
+    } else {
+      warn.classList.remove('consolidated');
+      document.getElementById('warnIcon').textContent = '';
+    }
   } else {
-    warn.classList.remove('show');
+    warn.style.display = 'none';
   }
 
   // #9
@@ -365,12 +369,6 @@ function displayData(data) {
   setFld('f_equity',        fmtInput(data.owners_equity));
   setFld('f_income_before', fmtInput(data.income_before_tax));
   setFld('f_income_after',  fmtInput(data.income_after_tax));
-
-  if (data.notes) {
-    const nb = document.getElementById('notesBar');
-    nb.textContent = '⚠ ' + data.notes;
-    nb.style.display = 'block';
-  }
 
   // #12
   const assets = data.total_assets || 0;
@@ -384,19 +382,19 @@ function displayData(data) {
   setText('d_inv',  fmt(inv));   renderSrc('s_inv',  data.inventory_detail);
   setText('d_eqp',  fmt(eqp));   renderSrc('s_eqp',  data.equipment_detail);
   setText('d_pre',  fmt(pre));   renderSrc('s_pre',  data.premises_detail);
-  setText('d_oth',  fmt(oth));   renderSrc('s_oth',  data.other_detail || 'Total Assets − Cash − Inventory − Equipment − Premises');
+  setText('d_oth',  fmt(oth));   // Other備考不要
   setText('d_tot',  fmt(assets)); renderSrc('s_tot', data.total_assets_detail);
 
   recalc();
 }
 
-// ソーステキストをレンダリング（BS:/PL: タグをハイライト）
+// ソーステキストをレンダリング（BS:/PL: プレフィックスを除去して表示）
 function renderSrc(id, text) {
   const el = document.getElementById(id);
-  if (!text) { el.textContent = '—'; return; }
-  // "BS:XXX" or "PL:XXX" を span でラップ
-  const html = text.replace(/\b(BS|PL):([^\s—\-,]+)/g, '<span class="sheet-tag">$1:$2</span>');
-  el.innerHTML = html;
+  if (!text) { el.textContent = ''; return; }
+  // "BS:XXX — " や "PL:XXX — " を除去して内容だけ表示
+  const clean = text.replace(/^(BS|PL):[^\s—–-]+\s*[—–-]+\s*/i, '').replace(/^(BS|PL):[^\s,、]+[,、]\s*(PL|BS):[^\s—–-]+\s*[—–-]+\s*/i, '');
+  el.textContent = clean || '';
 }
 
 // ── Recalculate ──────────────────────────────────────
@@ -411,7 +409,8 @@ function recalc() {
 
   document.getElementById('f_equity').classList.toggle('neg', equity < 0);
 
-  const fmv  = equity < 0 ? assets * 3 : equity * 3;
+  const fmv_raw = equity < 0 ? assets * 3 : equity * 3;
+  const fmv = Math.floor(fmv_raw / 1_000_000) * 1_000_000;  // 上3桁: 百万単位切り捨て
   const note = equity < 0
     ? `Owner's Equity が負 (${fmt(equity)}) のため\nTotal Assets (${fmt(assets)}) × 3`
     : `Owner's Equity (${fmt(equity)}) × 3`;
@@ -454,9 +453,10 @@ function fmt(n) {
 }
 
 function fmtInt(n) {
-  // 整数表示（小数なし）- FMV用
+  // 上3桁表示: 百万単位に切り捨て（例: 185,740,920 → 185,000,000）
   if (n === null || n === undefined || isNaN(n)) return '—';
-  const abs = Math.abs(n).toLocaleString('en-US', { maximumFractionDigits:0 });
+  const floored = Math.floor(Math.abs(n) / 1_000_000) * 1_000_000;
+  const abs = floored.toLocaleString('en-US', { maximumFractionDigits:0 });
   return (n < 0 ? '-$' : '$') + abs;
 }
 
