@@ -91,6 +91,7 @@ Required JSON format:
   "notes": "抽出時の特記事項があれば記載",
   "is_consolidated": false,
   "fiscal_year_end": "12/31",
+  "bs_pl_error": "",
   "consolidated_note": "BS:YTD、PL:YTD\nYTDにConsolidatedの記載",
   "cash_detail": "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54",
   "inventory_detail": "BS:YTD — Inventory (gross) $5,617,918.00 (Inventory Reserve は除外)",
@@ -103,6 +104,10 @@ Required JSON format:
 重要ルール:
 - is_consolidated: シート名・タイトル・勘定科目に「連結」「Consolidated」「合算」などが含まれる場合は true。単体（individual/standalone）のみ false。
 - fiscal_year_end: 財務諸表の決算日を "MM/DD" 形式で返す（例: "12/31", "03/31"）。12/31 の場合は Calendar Year、それ以外は Fiscal Year。
+- bs_pl_error: BSまたはPLのシートが特定できない場合はエラーメッセージを設定する。特定できた場合は空文字。
+  例（特定できない場合）: "BSとPLが特定できません。BSとPLが含まれるシートを「抽出ルールの修正」欄で指定してください。"
+  シートは特定できたが数値が読み取れない場合: "このスタイルの財務諸表の数字は読み取れません。"
+  例（特定できた場合）: ""
 - 各 detail フィールドには必ずシート種別とシート名を先頭に付けること。形式は「PL:シート名 — 」または「BS:シート名 — 」。損益計算書（Income Statement, P&L）から取得した値はPL:、貸借対照表（Balance Sheet）から取得した値はBS:とする。
 - 例: cash_detail → "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54"
 - 例: income_before_tax のdetailフィールドがあれば → "PL:YTD — Pre Tax Profit行から取得"
@@ -122,8 +127,43 @@ Required JSON format:
 def parse_excel_to_text(file_bytes: bytes) -> str:
     """ExcelファイルをテキストとしてClaudeに渡せる形式に変換"""
     xl = pd.ExcelFile(io.BytesIO(file_bytes))
+    all_sheet_names = xl.sheet_names
+
+    # BSとPLらしいシートのみ対象にする
+    bs_keywords = ["balance", "bs", "貸借", "資産"]
+    pl_keywords = ["income", "profit", "loss", "pl", "p&l", "損益", "収益"]
+
+    def is_bs(name: str) -> bool:
+        n = name.lower()
+        return any(k in n for k in bs_keywords)
+
+    def is_pl(name: str) -> bool:
+        n = name.lower()
+        return any(k in n for k in pl_keywords)
+
+    target_sheets = [s for s in all_sheet_names if is_bs(s) or is_pl(s)]
+
+    # BSもPLも見つからない場合は全シートを対象にする（従来通り）
+    if not target_sheets:
+        target_sheets = all_sheet_names
+
+    # サイズチェック：BS/PL以外のシートが存在 かつ 全体のセル数が多い場合はエラー
+    non_target = [s for s in all_sheet_names if s not in target_sheets]
+    if non_target:
+        total_cells = 0
+        for s in all_sheet_names:
+            try:
+                df = pd.read_excel(io.BytesIO(file_bytes), sheet_name=s, header=None, nrows=1)
+                row_count = pd.read_excel(io.BytesIO(file_bytes), sheet_name=s, header=None).shape[0]
+                col_count = df.shape[1]
+                total_cells += row_count * col_count
+            except Exception:
+                pass
+        if total_cells > 50000:
+            raise ValueError("TOO_LARGE")
+
     result = []
-    for sheet_name in xl.sheet_names:
+    for sheet_name in target_sheets:
         df = pd.read_excel(io.BytesIO(file_bytes), sheet_name=sheet_name, header=None)
         result.append(f"=== Sheet: {sheet_name} ===")
         result.append(df.to_string(na_rep=""))
@@ -237,6 +277,12 @@ async def extract_financial_data(
     file_bytes = await file.read()
     try:
         excel_text = parse_excel_to_text(file_bytes)
+    except ValueError as e:
+        if str(e) == "TOO_LARGE":
+            return JSONResponse({
+                "bs_pl_error": "BS、PL以外の情報がExcelに含まれているようです。情報量が多すぎるために読み込めません。"
+            })
+        raise HTTPException(status_code=400, detail=f"Excelファイルの読み込みエラー: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Excelファイルの読み込みエラー: {str(e)}")
 
