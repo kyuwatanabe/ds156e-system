@@ -58,17 +58,37 @@
   /* RIGHT */
   .right{display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto;min-height:0;}
 
-  /* #9 form-style rows - table layout */
-  .form-tbl{width:100%;border-collapse:collapse;}
-  .form-tbl tr{border-bottom:1px solid var(--border);}
-  .form-tbl tr:last-child{border-bottom:none;}
-  .form-tbl td{padding:9px 14px;vertical-align:middle;white-space:nowrap;}
-  .form-tbl td.lbl{font-size:13px;color:var(--text);width:300px;}
-  .form-tbl td.val{width:200px;}
-  .form-tbl td.tag{font-size:12px;color:var(--accent2);}
-  .form-val{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:14px;padding:5px 9px;outline:none;transition:border-color .2s;width:100%;}
-  .form-val:focus{border-color:var(--accent);}
-  .form-val.neg{color:var(--error);}
+  /* ── 統一データテーブル ── */
+  .dt{width:100%;border-collapse:collapse;}
+  .dt tr{border-bottom:1px solid var(--border);}
+  .dt tr:last-child{border-bottom:none;}
+  .dt tr.tot{background:var(--surface2);}
+  .dt td{padding:10px 14px;vertical-align:middle;}
+  /* ラベルセル: border-leftで青棒 */
+  .dt td.dl{
+    font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text2);border-left:3px solid var(--accent);padding-left:12px;
+    white-space:nowrap;
+  }
+  /* 値セル */
+  .dt td.dv{
+    font-family:var(--mono);font-size:15px;font-weight:600;
+    color:var(--text);text-align:right;white-space:nowrap;min-width:180px;
+  }
+  .dt td.dv.neg{color:var(--error);}
+  /* 補足セル */
+  .dt td.dn{font-size:12px;color:var(--text2);line-height:1.55;padding-left:20px;}
+  /* タグ (☑ Calendar Year など) */
+  .dt td.dtag{font-size:12px;color:var(--accent2);white-space:nowrap;padding-left:10px;}
+  /* #9 編集可能フィールド: 透明スタイル */
+  .dt-inp{
+    background:transparent;border:none;outline:none;
+    font-family:var(--mono);font-size:15px;font-weight:600;
+    color:var(--text);text-align:right;width:100%;padding:0;
+    cursor:text;
+  }
+  .dt-inp.neg{color:var(--error);}
+  .dt-inp:focus{color:var(--accent);}
   .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:12px;}
   .empty .big{font-size:48px;opacity:.25;}
   .empty p{font-size:13px;}
@@ -168,36 +188,34 @@
       <!-- #9 -->
       <div class="rb">
         <div class="rh"><span class="badge b9">#9</span></div>
-        <table class="form-tbl">
+        <table class="dt">
           <tr>
-            <td class="lbl">Financial Statement for year</td>
-            <td class="val"><input class="form-val" id="f_year" type="text" oninput="recalc()"></td>
-            <td class="tag">☑ Calendar Year</td>
+            <td class="dl">Financial Statement for year</td>
+            <td class="dv"><input class="dt-inp" id="f_year" type="text" oninput="recalc()"></td>
+            <td class="dtag">☑ Calendar Year</td>
           </tr>
           <tr>
-            <td class="lbl">Total Assets of U.S. Business</td>
-            <td class="val"><input class="form-val" id="f_assets" type="text" oninput="recalc()"></td>
-            <td class="tag">☑ Historical Cost</td>
+            <td class="dl">Total Assets of U.S. Business</td>
+            <td class="dv"><input class="dt-inp" id="f_assets" type="text" oninput="recalc()"></td>
+            <td class="dtag">☑ Historical Cost</td>
           </tr>
           <tr>
-            <td class="lbl">Total Liabilities</td>
-            <td class="val"><input class="form-val" id="f_liabilities" type="text" oninput="recalc()"></td>
+            <td class="dl">Total Liabilities</td>
+            <td class="dv"><input class="dt-inp" id="f_liabilities" type="text" oninput="recalc()"></td>
             <td></td>
           </tr>
           <tr>
-            <td class="lbl">Owner's Equity*</td>
-            <td class="val"><input class="form-val" id="f_equity" type="text" oninput="recalc()"></td>
+            <td class="dl">Owner's Equity*</td>
+            <td class="dv"><input class="dt-inp" id="f_equity" type="text" oninput="recalc()"></td>
             <td></td>
           </tr>
           <tr>
-            <td class="lbl">Total Annual Operating Income</td>
-            <td class="val" style="white-space:nowrap;">
-              <span style="font-size:11px;color:var(--text2);">Before Taxes</span>
-              <input class="form-val" id="f_income_before" type="text" oninput="recalc()" style="width:140px;margin-left:4px;">
-            </td>
-            <td class="tag" style="white-space:nowrap;">
-              <span style="font-size:11px;color:var(--text2);">After Taxes</span>
-              <input class="form-val" id="f_income_after" type="text" oninput="recalc()" style="width:140px;margin-left:4px;">
+            <td class="dl">Total Annual Operating Income</td>
+            <td class="dv" colspan="2" style="text-align:left;">
+              <span style="font-size:11px;color:var(--text2);margin-right:6px;">Before Taxes</span>
+              <input class="dt-inp" id="f_income_before" type="text" oninput="recalc()" style="width:160px;display:inline-block;">
+              <span style="font-size:11px;color:var(--text2);margin:0 6px 0 20px;">After Taxes</span>
+              <input class="dt-inp" id="f_income_after" type="text" oninput="recalc()" style="width:160px;display:inline-block;">
             </td>
           </tr>
         </table>
@@ -206,11 +224,11 @@
       <!-- #11 -->
       <div class="rb">
         <div class="rh"><span class="badge b11">#11</span></div>
-        <table class="form-tbl">
+        <table class="dt">
           <tr>
-            <td class="lbl">Fair Market Value of Business</td>
-            <td class="val"><div class="cv" id="f_fmv" style="padding:3px 0;">—</div></td>
-            <td style="font-size:12px;color:var(--text2);white-space:pre-line;padding:9px 14px;" id="f_fmv_note"></td>
+            <td class="dl">Fair Market Value of Business</td>
+            <td class="dv" id="f_fmv">—</td>
+            <td class="dn" id="f_fmv_note" style="white-space:pre-line;"></td>
           </tr>
         </table>
       </div>
@@ -218,20 +236,13 @@
       <!-- #12 -->
       <div class="rb">
         <div class="rh"><span class="badge b12">#12</span></div>
-        <table class="form-tbl">
-          
-          <tbody>
-            <tr><td class="lbl" style="width:110px">Cash</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_cash">—</td><td style="font-size:13px;color:var(--text2);" id="s_cash">—</td></tr>
-            <tr><td class="lbl" style="width:110px">Inventory</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_inv">—</td><td style="font-size:13px;color:var(--text2);" id="s_inv">—</td></tr>
-            <tr><td class="lbl" style="width:110px">Equipment</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_eqp">—</td><td style="font-size:13px;color:var(--text2);" id="s_eqp">—</td></tr>
-            <tr><td class="lbl" style="width:110px">Premises</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_pre">—</td><td style="font-size:13px;color:var(--text2);" id="s_pre">—</td></tr>
-            <tr style="color:var(--warn);"><td class="lbl" style="width:110px">Other</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_oth">—</td><td style="font-size:13px;color:var(--text2);" id="s_oth"></td></tr>
-            <tr style="background:var(--surface2);font-weight:700;">
-              <td class="lbl" style="width:110px">TOTAL</td>
-              <td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_tot">—</td>
-              <td style="font-size:13px;color:var(--text2);" id="s_tot">—</td>
-            </tr>
-          </tbody>
+        <table class="dt">
+          <tr><td class="dl">Cash</td>     <td class="dv" id="d_cash">—</td><td class="dn" id="s_cash"></td></tr>
+          <tr><td class="dl">Inventory</td><td class="dv" id="d_inv">—</td> <td class="dn" id="s_inv"></td></tr>
+          <tr><td class="dl">Equipment</td><td class="dv" id="d_eqp">—</td> <td class="dn" id="s_eqp"></td></tr>
+          <tr><td class="dl">Premises</td> <td class="dv" id="d_pre">—</td> <td class="dn" id="s_pre"></td></tr>
+          <tr><td class="dl">Other</td>    <td class="dv" id="d_oth">—</td> <td class="dn" id="s_oth"></td></tr>
+          <tr class="tot"><td class="dl" style="border-left-color:var(--accent2);">Total</td><td class="dv" id="d_tot" style="color:var(--accent2);">—</td><td class="dn" id="s_tot"></td></tr>
         </table>
       </div>
 
@@ -395,6 +406,7 @@ function recalc() {
   const equity = parseNum('f_equity');
 
   document.getElementById('f_equity').classList.toggle('neg', equity < 0);
+  document.getElementById('f_equity').classList.toggle('dt-inp', true);
 
   const fmv_raw = equity < 0 ? assets * 3 : equity * 3;
   const fmv = Math.round(fmv_raw / 1_000_000) * 1_000_000;  // 上3桁: 百万単位四捨五入
