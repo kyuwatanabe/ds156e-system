@@ -69,9 +69,8 @@
   .consolidated-warn.show{display:flex;align-items:flex-start;gap:14px;}
   .warn-icon{font-size:28px;flex-shrink:0;line-height:1;}
   .warn-body{}
-  .warn-title{font-size:15px;font-weight:600;color:var(--error);margin-bottom:4px;}
-  .warn-text{font-size:13px;color:#ffb3b3;line-height:1.6;}
-  .warn-note{font-size:12px;color:var(--text2);margin-top:6px;font-family:var(--mono);}
+  .warn-title{font-size:14px;font-weight:600;color:var(--error);}
+  .warn-note{font-size:13px;color:#ffb3b3;margin-top:3px;font-family:var(--mono);}
 
   /* RESULT BLOCKS */
   .rb{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;flex-shrink:0;}
@@ -162,8 +161,7 @@
     <div class="consolidated-warn" id="consolidatedWarn">
       <div class="warn-icon">⚠️</div>
       <div class="warn-body">
-        <div class="warn-title">連結財務諸表が検出されました</div>
-        <div class="warn-text">E-2ビザ申請には<strong>単体（individual）財務諸表</strong>が必要です。連結財務諸表は使用できません。単体の財務諸表をご用意ください。</div>
+        <div class="warn-title">連結財務諸表か確認してください</div>
         <div class="warn-note" id="consolidatedNote"></div>
       </div>
     </div>
