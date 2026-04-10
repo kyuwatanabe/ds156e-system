@@ -174,21 +174,21 @@ def fill_pdf(data: dict) -> bytes:
     }
     checkbox_fields = {"FinCY", "ExBus"}
 
-    # 全ページのアノテーションを直接操作
+    # テキストフィールド: update_page_form_field_values (auto_regenerate=False)
+    for page in writer.pages:
+        try:
+            writer.update_page_form_field_values(page, text_fields, auto_regenerate=False)
+        except Exception:
+            pass
+
+    # チェックボックス: 直接操作
     for page in writer.pages:
         if "/Annots" not in page:
             continue
         for annot_ref in page["/Annots"]:
             annot = annot_ref.get_object()
             field_name = annot.get("/T")
-            if not field_name:
-                continue
-            if field_name in text_fields:
-                annot[NameObject("/V")] = create_string_object(text_fields[field_name])
-                # 外観キャッシュをクリアして再描画させる
-                if "/AP" in annot:
-                    del annot[NameObject("/AP")]
-            elif field_name in checkbox_fields:
+            if field_name in checkbox_fields:
                 annot[NameObject("/V")]  = NameObject("/Yes")
                 annot[NameObject("/AS")] = NameObject("/Yes")
 

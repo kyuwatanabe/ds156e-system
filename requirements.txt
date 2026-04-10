@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 anthropic
-pypdf
+pypdf==5.9.0
 openpyxl
 pandas
 python-multipart
