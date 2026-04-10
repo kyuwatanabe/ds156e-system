@@ -85,7 +85,12 @@ Required JSON format:
   "equipment": 6546970.00,
   "premises": 0.00,
   "currency": "USD",
-  "notes": "抽出時の特記事項があれば記載"
+  "notes": "抽出時の特記事項があれば記載",
+  "cash_detail": "Petty Cash $7,144 + Cash-Bank $2,330,326",
+  "inventory_detail": "Inventory (gross) $5,617,918 — Inventory Reserve (-$1,270,359) は除外",
+  "equipment_detail": "Plant & Equipment (gross) $6,546,970 — Accumulated Depreciation は除外",
+  "premises_detail": "バランスシートに明示的な項目なし → $0",
+  "other_detail": "Total Assets から Cash・Inventory・Equipment・Premises を差し引いた残り（AR, Goodwill 等を含む）"
 }
 """
 

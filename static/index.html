@@ -13,71 +13,99 @@
     --mono:'IBM Plex Mono',monospace; --sans:'Noto Sans JP',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);height:100vh;overflow:hidden;font-size:13px;line-height:1.5;}
-  header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;height:46px;}
-  .logo{font-family:var(--mono);font-size:10px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;background:rgba(79,124,255,.1);border:1px solid rgba(79,124,255,.25);padding:3px 8px;border-radius:3px;flex-shrink:0;}
-  header h1{font-size:14px;font-weight:500;flex:1;}
-  .version{font-family:var(--mono);font-size:10px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);padding:3px 8px;border-radius:3px;}
-  .layout{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 46px);}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);height:100vh;overflow:hidden;font-size:14px;line-height:1.55;}
+
+  /* HEADER */
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;gap:14px;height:48px;}
+  .logo{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;background:rgba(79,124,255,.1);border:1px solid rgba(79,124,255,.25);padding:4px 10px;border-radius:3px;flex-shrink:0;}
+  header h1{font-size:15px;font-weight:500;flex:1;}
+  .version{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:3px;}
+
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 48px);}
 
   /* LEFT */
-  .left-panel{border-right:1px solid var(--border);display:flex;flex-direction:column;padding:14px;gap:12px;overflow:hidden;}
-  .lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
-  .lbl::before{content:'';width:3px;height:11px;background:var(--accent);border-radius:2px;}
+  .left{border-right:1px solid var(--border);display:flex;flex-direction:column;padding:16px;gap:14px;overflow:hidden;}
+  .lbl{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+  .lbl::before{content:'';width:3px;height:12px;background:var(--accent);border-radius:2px;}
 
-  .upload-zone{border:1px dashed var(--border);border-radius:6px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);user-select:none;}
+  /* UPLOAD */
+  .upload-zone{border:2px dashed var(--border);border-radius:8px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);user-select:none;}
   .upload-zone.drag-over{border-color:var(--accent);background:rgba(79,124,255,.08);border-style:solid;}
   .upload-zone.has-file{border-color:var(--accent2);border-style:solid;background:rgba(0,212,170,.05);}
-  .upload-icon{font-size:22px;margin-bottom:4px;}
-  .upload-main{font-size:13px;font-weight:500;}
-  .upload-sub{font-size:11px;color:var(--text2);margin-top:2px;}
-  .upload-filename{font-family:var(--mono);font-size:11px;color:var(--accent2);margin-top:6px;word-break:break-all;display:none;}
-  .upload-filename.show{display:block;}
+  .upload-zone.loading{border-color:var(--warn);border-style:solid;background:rgba(255,140,66,.05);}
+  .upload-icon{font-size:26px;margin-bottom:6px;}
+  .upload-main{font-size:14px;font-weight:500;}
+  .upload-sub{font-size:12px;color:var(--text2);margin-top:3px;}
+  .upload-fn{font-family:var(--mono);font-size:12px;color:var(--accent2);margin-top:8px;word-break:break-all;display:none;}
+  .upload-fn.show{display:block;}
 
-  .comment-area{flex:1;display:flex;flex-direction:column;min-height:0;}
-  #commentInput{flex:1;width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:12px;line-height:1.6;padding:10px;resize:none;outline:none;transition:border-color .2s;}
+  /* COMMENT */
+  .comment-wrap{flex:1;display:flex;flex-direction:column;min-height:0;}
+  #commentInput{flex:1;width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--sans);font-size:13px;line-height:1.65;padding:11px;resize:none;outline:none;transition:border-color .2s;}
   #commentInput:focus{border-color:var(--accent);}
-  .comment-hint{font-size:11px;color:var(--text2);margin-top:5px;}
+  .comment-hint{font-size:12px;color:var(--text2);margin-top:6px;}
 
-  .btn-p{width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;}
-  .btn-p:hover:not(:disabled){background:#3d6aee;}
-  .btn-p:disabled{background:var(--border);color:var(--text2);cursor:not-allowed;}
-  .btn-s{width:100%;padding:10px;background:transparent;color:var(--accent2);border:1px solid var(--accent2);border-radius:6px;font-size:13px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;}
+  /* PDF BUTTON */
+  .btn-s{width:100%;padding:12px;background:transparent;color:var(--accent2);border:1px solid var(--accent2);border-radius:6px;font-size:14px;font-weight:500;font-family:var(--sans);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;}
   .btn-s:hover:not(:disabled){background:rgba(0,212,170,.08);}
   .btn-s:disabled{opacity:.35;cursor:not-allowed;}
 
-  .status{font-size:11px;padding:6px 10px;border-radius:4px;font-family:var(--mono);display:none;flex-shrink:0;}
+  /* STATUS */
+  .status{font-size:12px;padding:7px 11px;border-radius:4px;font-family:var(--mono);display:none;flex-shrink:0;}
   .status.err{background:rgba(255,107,107,.1);color:var(--error);border:1px solid rgba(255,107,107,.3);display:block;}
   .status.ok{background:rgba(0,212,170,.1);color:var(--accent2);border:1px solid rgba(0,212,170,.3);display:block;}
+  .status.loading{background:rgba(255,140,66,.1);color:var(--warn);border:1px solid rgba(255,140,66,.3);display:flex;align-items:center;gap:8px;}
 
   /* RIGHT */
-  .right-panel{display:flex;flex-direction:column;padding:14px;gap:10px;overflow:hidden;}
-  .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:10px;}
-  .empty .big{font-size:40px;opacity:.3;}
-  .empty p{font-size:12px;}
+  .right{display:flex;flex-direction:column;padding:16px;gap:12px;overflow:hidden;}
+  .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:12px;}
+  .empty .big{font-size:48px;opacity:.25;}
+  .empty p{font-size:13px;}
 
-  .rb{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;flex-shrink:0;}
-  .rh{background:var(--surface2);padding:7px 12px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
-  .badge{font-size:10px;padding:1px 7px;border-radius:20px;font-weight:700;}
-  .b9{background:rgba(79,124,255,.2);color:var(--accent);}
+  /* RESULT BLOCKS */
+  .rb{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;flex-shrink:0;}
+  .rh{background:var(--surface2);padding:8px 14px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;}
+  .b9 {background:rgba(79,124,255,.2);color:var(--accent);}
   .b11{background:rgba(0,212,170,.2);color:var(--accent2);}
   .b12{background:rgba(255,140,66,.2);color:var(--warn);}
 
+  /* FIELD GRID */
   .frow{display:grid;gap:1px;background:var(--border);}
   .c2{grid-template-columns:repeat(2,1fr);}
   .c3{grid-template-columns:repeat(3,1fr);}
   .c4{grid-template-columns:repeat(4,1fr);}
-  .c6{grid-template-columns:repeat(6,1fr);}
-  .fc{background:var(--surface);padding:8px 10px;}
-  .fl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .fi{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:var(--mono);font-size:12px;padding:4px 7px;outline:none;transition:border-color .2s;}
+  .fc{background:var(--surface);padding:10px 13px;}
+  .fl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;}
+
+  /* INPUTS */
+  .fi-wrap{position:relative;}
+  .fi{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:14px;padding:6px 9px;outline:none;transition:border-color .2s;}
   .fi:focus{border-color:var(--accent);}
   .fi.neg{color:var(--error);}
-  .cv{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent2);padding:3px 0 1px;}
-  .cn{font-size:10px;color:var(--text2);margin-top:2px;}
-  .nb{padding:6px 12px;font-size:11px;color:var(--warn);background:rgba(255,140,66,.06);border-top:1px solid var(--border);font-family:var(--mono);display:none;}
+  .fi[readonly]{color:var(--text2);}
 
-  .spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
+  /* COMPUTED VALUES */
+  .cv{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--accent2);padding:4px 0 2px;}
+  .cv.warn{color:var(--warn);}
+
+  /* #12 detail rows */
+  .detail-table{width:100%;border-collapse:collapse;}
+  .detail-table th,.detail-table td{padding:8px 13px;text-align:left;border-bottom:1px solid var(--border);}
+  .detail-table th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);background:var(--surface2);font-weight:600;}
+  .detail-table tr:last-child td{border-bottom:none;}
+  .detail-table td.item{font-size:13px;font-weight:500;white-space:nowrap;}
+  .detail-table td.val{font-family:var(--mono);font-size:14px;font-weight:600;text-align:right;white-space:nowrap;}
+  .detail-table td.src{font-size:11px;color:var(--text2);line-height:1.5;}
+  .detail-table tr.total-row td{background:var(--surface2);font-weight:700;}
+  .detail-table tr.total-row td.val{color:var(--accent2);font-size:15px;}
+  .detail-table tr.other-row td.val{color:var(--warn);}
+
+  .nb{padding:8px 14px;font-size:12px;color:var(--warn);background:rgba(255,140,66,.06);border-top:1px solid var(--border);font-family:var(--mono);display:none;}
+
+  /* SPINNER */
+  .spinner{width:14px;height:14px;border:2px solid rgba(255,140,66,.3);border-top-color:var(--warn);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0;}
   @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
@@ -86,32 +114,30 @@
 <header>
   <div class="logo">GF // DS-156E</div>
   <h1>財務情報入力システム</h1>
-  <div class="version">v1.1 · 2026-04-10</div>
+  <div class="version">v1.2 · 2026-04-10</div>
 </header>
 
 <div class="layout">
-  <div class="left-panel">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
 
     <div>
       <div class="lbl">① 財務諸表 Excel</div>
       <div class="upload-zone" id="uploadZone">
         <div class="upload-icon">📊</div>
         <div class="upload-main">クリックまたはドラッグ＆ドロップ</div>
-        <div class="upload-sub">.xlsx / .xls</div>
-        <div class="upload-filename" id="uploadFilename"></div>
+        <div class="upload-sub">.xlsx / .xls — 読み込むと自動で抽出</div>
+        <div class="upload-fn" id="uploadFn"></div>
       </div>
       <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none">
     </div>
 
-    <div class="comment-area">
-      <div class="lbl">② 抽出ルールの補足・修正</div>
-      <textarea id="commentInput" placeholder="例：&#10;・バランスシートは「BS」シートにある&#10;・単位は千円（実額に換算してください）&#10;・Inventoryは「製品」と「仕掛品」の合計&#10;・Owner's Equityは「純資産合計」の行を使って"></textarea>
+    <div class="comment-wrap">
+      <div class="lbl">② 抽出ルールの補足</div>
+      <textarea id="commentInput" placeholder="例：&#10;・バランスシートは「BS」シートにある&#10;・単位は千円（実額に換算してください）&#10;・Inventoryは「製品」と「仕掛品」の合計&#10;・Owner's Equityは「純資産合計」の行"></textarea>
       <div class="comment-hint">💡 財務諸表のスタイルが標準と異なる場合に記入</div>
     </div>
-
-    <button class="btn-p" id="extractBtn" disabled onclick="extractData()">
-      <span>財務データを抽出</span>
-    </button>
 
     <button class="btn-s" id="pdfBtn" disabled onclick="generatePdf()">
       📄 DS-156E PDF を出力
@@ -120,48 +146,89 @@
     <div class="status" id="statusMsg"></div>
   </div>
 
-  <div class="right-panel">
+  <!-- RIGHT PANEL -->
+  <div class="right">
+
     <div class="empty" id="emptyState">
       <div class="big">📋</div>
-      <p>Excelをアップロードして「財務データを抽出」を押してください</p>
+      <p>Excelをアップロードすると自動で財務データを抽出します</p>
     </div>
 
-    <div id="resultsArea" style="display:none;flex-direction:column;gap:10px;">
+    <div id="resultsArea" style="display:none;flex-direction:column;gap:12px;">
 
+      <!-- #9 Financial Statement -->
       <div class="rb">
         <div class="rh"><span class="badge b9">#9</span> Financial Statement</div>
         <div class="frow c4">
-          <div class="fc"><div class="fl">Year</div><input class="fi" id="f_year" type="text" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Currency</div><input class="fi" id="f_currency" type="text" readonly style="color:var(--text2)"></div>
-          <div class="fc"><div class="fl">Before Tax Income</div><input class="fi" id="f_income_before" type="number" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">After Tax Income</div><input class="fi" id="f_income_after" type="number" oninput="recalc()"></div>
+          <div class="fc">
+            <div class="fl">Year</div>
+            <input class="fi" id="f_year" type="text" oninput="recalc()">
+          </div>
+          <div class="fc">
+            <div class="fl">Currency</div>
+            <input class="fi" id="f_currency" type="text" readonly>
+          </div>
+          <div class="fc">
+            <div class="fl">Before Tax Income</div>
+            <input class="fi" id="f_income_before" type="text" oninput="recalc()">
+          </div>
+          <div class="fc">
+            <div class="fl">After Tax Income</div>
+            <input class="fi" id="f_income_after" type="text" oninput="recalc()">
+          </div>
         </div>
         <div class="frow c3">
-          <div class="fc"><div class="fl">Total Assets</div><input class="fi" id="f_assets" type="number" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Total Liabilities</div><input class="fi" id="f_liabilities" type="number" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Owner's Equity</div><input class="fi" id="f_equity" type="number" oninput="recalc()"></div>
+          <div class="fc">
+            <div class="fl">Total Assets</div>
+            <input class="fi" id="f_assets" type="text" oninput="recalc()">
+          </div>
+          <div class="fc">
+            <div class="fl">Total Liabilities</div>
+            <input class="fi" id="f_liabilities" type="text" oninput="recalc()">
+          </div>
+          <div class="fc">
+            <div class="fl">Owner's Equity</div>
+            <input class="fi" id="f_equity" type="text" oninput="recalc()">
+          </div>
         </div>
         <div class="nb" id="notesBar"></div>
       </div>
 
+      <!-- #11 -->
       <div class="rb">
         <div class="rh"><span class="badge b11">#11</span> Type of Investment — Continuation of an existing business</div>
         <div class="frow c2">
-          <div class="fc"><div class="fl">Fair Market Value of Business（自動計算）</div><div class="cv" id="f_fmv">—</div></div>
-          <div class="fc"><div class="fl">計算根拠</div><div class="cn" id="f_fmv_note" style="padding-top:5px"></div></div>
+          <div class="fc">
+            <div class="fl">Fair Market Value of Business（自動計算）</div>
+            <div class="cv" id="f_fmv">—</div>
+          </div>
+          <div class="fc">
+            <div class="fl">計算根拠</div>
+            <div style="font-size:12px;color:var(--text2);padding-top:6px;" id="f_fmv_note"></div>
+          </div>
         </div>
       </div>
 
+      <!-- #12 -->
       <div class="rb">
         <div class="rh"><span class="badge b12">#12</span> Total Investment from Abroad — Cumulative</div>
-        <div class="frow c6">
-          <div class="fc"><div class="fl">Cash</div><input class="fi" id="f_cash" type="number" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Inventory (gross)</div><input class="fi" id="f_inventory" type="number" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Equipment (gross)</div><input class="fi" id="f_equipment" type="number" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Premises</div><input class="fi" id="f_premises" type="number" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Other（自動）</div><div class="cv" id="f_other" style="font-size:12px;padding-top:3px">—</div></div>
-          <div class="fc"><div class="fl">TOTAL（自動）</div><div class="cv" id="f_total" style="font-size:12px;padding-top:3px">—</div></div>
-        </div>
+        <table class="detail-table" id="detail12">
+          <thead>
+            <tr>
+              <th style="width:110px">項目</th>
+              <th style="width:150px;text-align:right">金額</th>
+              <th>使用した数値と計算根拠</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="item">Cash</td><td class="val" id="d_cash">—</td><td class="src" id="s_cash">—</td></tr>
+            <tr><td class="item">Inventory</td><td class="val" id="d_inv">—</td><td class="src" id="s_inv">—</td></tr>
+            <tr><td class="item">Equipment</td><td class="val" id="d_eqp">—</td><td class="src" id="s_eqp">—</td></tr>
+            <tr><td class="item">Premises</td><td class="val" id="d_pre">—</td><td class="src" id="s_pre">—</td></tr>
+            <tr class="other-row"><td class="item">Other</td><td class="val" id="d_oth">—</td><td class="src" id="s_oth">—</td></tr>
+            <tr class="total-row"><td class="item">TOTAL</td><td class="val" id="d_tot">—</td><td class="src" style="color:var(--text2);font-size:11px;">= Total Assets</td></tr>
+          </tbody>
+        </table>
       </div>
 
     </div>
@@ -172,12 +239,12 @@
 let selectedFile = null;
 let extractedData = null;
 
-// ── Upload & Drag-and-Drop ────────────────────────────
-const zone = document.getElementById('uploadZone');
-const fileInput = document.getElementById('fileInput');
+// ── Upload & D&D ────────────────────────────────────
+const zone    = document.getElementById('uploadZone');
+const fileInp = document.getElementById('fileInput');
 
-zone.addEventListener('click', () => fileInput.click());
-fileInput.addEventListener('change', () => { if (fileInput.files[0]) acceptFile(fileInput.files[0]); });
+zone.addEventListener('click', () => fileInp.click());
+fileInp.addEventListener('change', () => { if (fileInp.files[0]) acceptFile(fileInp.files[0]); });
 
 ['dragenter','dragover'].forEach(ev => zone.addEventListener(ev, e => {
   e.preventDefault(); e.stopPropagation(); zone.classList.add('drag-over');
@@ -187,29 +254,29 @@ fileInput.addEventListener('change', () => { if (fileInput.files[0]) acceptFile(
 }));
 zone.addEventListener('drop', e => {
   e.preventDefault(); e.stopPropagation(); zone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (!file) return;
-  if (!/\.(xlsx|xls)$/i.test(file.name)) { setStatus('.xlsx または .xls をドロップしてください', 'err'); return; }
-  acceptFile(file);
+  const f = e.dataTransfer.files[0];
+  if (!f) return;
+  if (!/\.(xlsx|xls)$/i.test(f.name)) { setStatus('.xlsx または .xls をドロップしてください', 'err'); return; }
+  acceptFile(f);
 });
 
 function acceptFile(file) {
   selectedFile = file;
   zone.classList.add('has-file');
-  const fn = document.getElementById('uploadFilename');
+  const fn = document.getElementById('uploadFn');
   fn.textContent = '📎 ' + file.name;
   fn.classList.add('show');
-  document.getElementById('extractBtn').disabled = false;
   setStatus('', '');
+  extractData(); // ← 自動抽出
 }
 
-// ── Extract ───────────────────────────────────────────
+// ── Extract ─────────────────────────────────────────
 async function extractData() {
   if (!selectedFile) return;
-  const btn = document.getElementById('extractBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div><span>抽出中...</span>';
-  setStatus('', '');
+
+  zone.classList.add('loading');
+  setStatus('抽出中...', 'loading');
+  document.getElementById('pdfBtn').disabled = true;
 
   const fd = new FormData();
   fd.append('file', selectedFile);
@@ -225,70 +292,81 @@ async function extractData() {
   } catch(e) {
     setStatus('エラー: ' + e.message, 'err');
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<span>財務データを抽出</span>';
+    zone.classList.remove('loading');
   }
 }
 
-// ── Display ───────────────────────────────────────────
+// ── Display ─────────────────────────────────────────
 function displayData(data) {
   extractedData = data;
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('resultsArea').style.display = 'flex';
-  document.getElementById('f_year').value          = data.year || '';
-  document.getElementById('f_currency').value      = data.currency || 'USD';
-  document.getElementById('f_assets').value        = data.total_assets || 0;
-  document.getElementById('f_liabilities').value   = data.total_liabilities || 0;
-  document.getElementById('f_equity').value        = data.owners_equity || 0;
-  document.getElementById('f_income_before').value = data.income_before_tax || 0;
-  document.getElementById('f_income_after').value  = data.income_after_tax || 0;
-  document.getElementById('f_cash').value          = data.cash || 0;
-  document.getElementById('f_inventory').value     = data.inventory || 0;
-  document.getElementById('f_equipment').value     = data.equipment || 0;
-  document.getElementById('f_premises').value      = data.premises || 0;
+
+  setFld('f_year',         data.year || '');
+  setFld('f_currency',     data.currency || 'USD');
+  setFld('f_assets',       fmtInput(data.total_assets));
+  setFld('f_liabilities',  fmtInput(data.total_liabilities));
+  setFld('f_equity',       fmtInput(data.owners_equity));
+  setFld('f_income_before',fmtInput(data.income_before_tax));
+  setFld('f_income_after', fmtInput(data.income_after_tax));
+
+  // #12 detail table
+  const assets = data.total_assets || 0;
+  const cash   = data.cash || 0;
+  const inv    = data.inventory || 0;
+  const eqp    = data.equipment || 0;
+  const pre    = data.premises || 0;
+  const oth    = assets - cash - inv - eqp - pre;
+
+  setText('d_cash', fmt(cash));  setText('s_cash', data.cash_detail    || '—');
+  setText('d_inv',  fmt(inv));   setText('s_inv',  data.inventory_detail || '—');
+  setText('d_eqp',  fmt(eqp));   setText('s_eqp',  data.equipment_detail || '—');
+  setText('d_pre',  fmt(pre));   setText('s_pre',  data.premises_detail  || '—');
+  setText('d_oth',  fmt(oth));   setText('s_oth',  data.other_detail     || 'Total Assets - Cash - Inventory - Equipment - Premises');
+  setText('d_tot',  fmt(assets));
+
   if (data.notes) {
     const nb = document.getElementById('notesBar');
     nb.textContent = '⚠ ' + data.notes;
     nb.style.display = 'block';
   }
+
   recalc();
 }
 
-// ── Recalculate ───────────────────────────────────────
-function fmt(n) {
-  if (isNaN(n)) return '—';
-  return (n < 0 ? '-$' : '$') + Math.abs(n).toLocaleString('en-US', {maximumFractionDigits:0});
+// ── Recalculate #9 & #11 ────────────────────────────
+function parseNum(id) {
+  const v = document.getElementById(id).value.replace(/,/g, '').replace(/\$/g, '');
+  return parseFloat(v) || 0;
 }
 
 function recalc() {
-  const assets = +document.getElementById('f_assets').value || 0;
-  const equity = +document.getElementById('f_equity').value || 0;
-  const cash   = +document.getElementById('f_cash').value || 0;
-  const inv    = +document.getElementById('f_inventory').value || 0;
-  const eqp    = +document.getElementById('f_equipment').value || 0;
-  const pre    = +document.getElementById('f_premises').value || 0;
+  const assets = parseNum('f_assets');
+  const equity = parseNum('f_equity');
 
-  const fmv  = equity < 0 ? assets * 3 : equity * 3;
-  const note = equity < 0 ? "Owner's Equity < 0 → Total Assets × 3" : "Owner's Equity × 3";
-  document.getElementById('f_fmv').textContent      = fmt(fmv);
-  document.getElementById('f_fmv_note').textContent = note;
-  document.getElementById('f_other').textContent    = fmt(assets - cash - inv - eqp - pre);
-  document.getElementById('f_total').textContent    = fmt(assets);
+  // Equity色
   document.getElementById('f_equity').classList.toggle('neg', equity < 0);
 
+  // #11
+  const fmv  = equity < 0 ? assets * 3 : equity * 3;
+  const note = equity < 0
+    ? `Owner's Equity が負 (${fmt(equity)}) のため\nTotal Assets (${fmt(assets)}) × 3`
+    : `Owner's Equity (${fmt(equity)}) × 3`;
+  setText('f_fmv', fmt(fmv));
+  setText('f_fmv_note', note);
+
+  // sync extractedData
   if (extractedData) {
     extractedData.total_assets      = assets;
-    extractedData.total_liabilities = +document.getElementById('f_liabilities').value || 0;
+    extractedData.total_liabilities = parseNum('f_liabilities');
     extractedData.owners_equity     = equity;
-    extractedData.income_before_tax = +document.getElementById('f_income_before').value || 0;
-    extractedData.income_after_tax  = +document.getElementById('f_income_after').value || 0;
-    extractedData.cash = cash; extractedData.inventory = inv;
-    extractedData.equipment = eqp; extractedData.premises = pre;
-    extractedData.year = document.getElementById('f_year').value;
+    extractedData.income_before_tax = parseNum('f_income_before');
+    extractedData.income_after_tax  = parseNum('f_income_after');
+    extractedData.year              = document.getElementById('f_year').value;
   }
 }
 
-// ── Generate PDF ──────────────────────────────────────
+// ── Generate PDF ─────────────────────────────────────
 async function generatePdf() {
   if (!extractedData) return;
   const btn = document.getElementById('pdfBtn');
@@ -306,11 +384,32 @@ async function generatePdf() {
   finally { btn.disabled = false; btn.innerHTML = '📄 DS-156E PDF を出力'; }
 }
 
-// ── Helpers ───────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────
+function fmt(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  const abs = Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  return (n < 0 ? '-$' : '$') + abs;
+}
+
+function fmtInput(n) {
+  if (n === null || n === undefined || isNaN(n)) return '0';
+  const abs = Math.abs(n).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  return (n < 0 ? '-' : '') + abs;
+}
+
+function setFld(id, val) { document.getElementById(id).value = val; }
+function setText(id, val) { document.getElementById(id).textContent = val; }
+
 function setStatus(msg, type) {
   const el = document.getElementById('statusMsg');
-  el.textContent = msg;
-  el.className = 'status' + (type ? ' ' + type : '');
+  if (!msg) { el.className = 'status'; return; }
+  if (type === 'loading') {
+    el.className = 'status loading';
+    el.innerHTML = '<div class="spinner"></div><span>' + msg + '</span>';
+  } else {
+    el.textContent = msg;
+    el.className   = 'status ' + type;
+  }
 }
 </script>
 </body>
