@@ -97,13 +97,6 @@
   .fi.neg{color:var(--error);}
   .fi[readonly]{color:var(--text2);}
   .cv{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--accent2);padding:4px 0 2px;}
-
-  /* #12 table */
-  .detail-table{width:100%;border-collapse:collapse;}
-  .detail-table th{padding:8px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);background:var(--surface2);font-weight:600;border-bottom:1px solid var(--border);}
-  .detail-table th.right{text-align:right;}
-  .detail-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
-  .detail-table tr:last-child td{border-bottom:none;}
   .td-item{font-size:14px;font-weight:600;white-space:nowrap;}
   .td-val{font-family:var(--mono);font-size:15px;font-weight:600;text-align:right;white-space:nowrap;}
   .td-src{font-size:13px;color:var(--text2);line-height:1.6;}
@@ -143,7 +136,7 @@
 
     <div class="comment-wrap">
       <div class="lbl">抽出ルールの修正</div>
-      <textarea id="commentInput" placeholder="財務諸表のスタイルが標準と異なる場合に記入してください"></textarea>
+      <textarea id="commentInput" placeholder=""></textarea>
       <button class="btn-send" id="sendBtn" disabled onclick="sendComment()">
         送信して再抽出
       </button>
@@ -225,24 +218,18 @@
       <!-- #12 -->
       <div class="rb">
         <div class="rh"><span class="badge b12">#12</span></div>
-        <table class="detail-table">
-          <thead>
-            <tr>
-              <th style="width:110px">項目</th>
-              <th class="right" style="width:160px">金額</th>
-              <th>備考</th>
-            </tr>
-          </thead>
+        <table class="form-tbl">
+          
           <tbody>
-            <tr><td class="td-item">Cash</td><td class="td-val" id="d_cash">—</td><td class="td-src" id="s_cash">—</td></tr>
-            <tr><td class="td-item">Inventory</td><td class="td-val" id="d_inv">—</td><td class="td-src" id="s_inv">—</td></tr>
-            <tr><td class="td-item">Equipment</td><td class="td-val" id="d_eqp">—</td><td class="td-src" id="s_eqp">—</td></tr>
-            <tr><td class="td-item">Premises</td><td class="td-val" id="d_pre">—</td><td class="td-src" id="s_pre">—</td></tr>
-            <tr class="row-other"><td class="td-item">Other</td><td class="td-val" id="d_oth">—</td><td class="td-src" id="s_oth"></td></tr>
-            <tr class="row-total">
-              <td class="td-item">TOTAL</td>
-              <td class="td-val" id="d_tot">—</td>
-              <td class="td-src" id="s_tot">—</td>
+            <tr><td class="lbl" style="width:110px">Cash</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_cash">—</td><td style="font-size:13px;color:var(--text2);" id="s_cash">—</td></tr>
+            <tr><td class="lbl" style="width:110px">Inventory</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_inv">—</td><td style="font-size:13px;color:var(--text2);" id="s_inv">—</td></tr>
+            <tr><td class="lbl" style="width:110px">Equipment</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_eqp">—</td><td style="font-size:13px;color:var(--text2);" id="s_eqp">—</td></tr>
+            <tr><td class="lbl" style="width:110px">Premises</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_pre">—</td><td style="font-size:13px;color:var(--text2);" id="s_pre">—</td></tr>
+            <tr style="color:var(--warn);"><td class="lbl" style="width:110px">Other</td><td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_oth">—</td><td style="font-size:13px;color:var(--text2);" id="s_oth"></td></tr>
+            <tr style="background:var(--surface2);font-weight:700;">
+              <td class="lbl" style="width:110px">TOTAL</td>
+              <td class="val" style="text-align:right;font-family:var(--mono);font-size:14px;font-weight:600;width:160px" id="d_tot">—</td>
+              <td style="font-size:13px;color:var(--text2);" id="s_tot">—</td>
             </tr>
           </tbody>
         </table>
@@ -383,7 +370,7 @@ function displayData(data) {
   setText('d_eqp',  fmt(eqp));   renderSrc('s_eqp',  data.equipment_detail);
   setText('d_pre',  fmt(pre));   renderSrc('s_pre',  data.premises_detail);
   setText('d_oth',  fmt(oth));   // Other備考不要
-  setText('d_tot',  fmt(assets)); renderSrc('s_tot', data.total_assets_detail);
+  setText('d_tot',  fmt(assets)); document.getElementById('s_tot').textContent = '';
 
   recalc();
 }
@@ -410,7 +397,7 @@ function recalc() {
   document.getElementById('f_equity').classList.toggle('neg', equity < 0);
 
   const fmv_raw = equity < 0 ? assets * 3 : equity * 3;
-  const fmv = Math.floor(fmv_raw / 1_000_000) * 1_000_000;  // 上3桁: 百万単位切り捨て
+  const fmv = Math.round(fmv_raw / 1_000_000) * 1_000_000;  // 上3桁: 百万単位四捨五入
   const note = equity < 0
     ? `Owner's Equity が負 (${fmt(equity)}) のため\nTotal Assets (${fmt(assets)}) × 3`
     : `Owner's Equity (${fmt(equity)}) × 3`;

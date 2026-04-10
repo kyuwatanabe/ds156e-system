@@ -159,8 +159,7 @@ def fill_pdf(data: dict) -> bytes:
     other     = assets - cash - inventory - equipment - premises
     fmv_raw   = assets * 3 if equity < 0 else equity * 3
     # 上3桁: 百万単位に切り捨て (例: 185,740,920 → 185,000,000)
-    import math
-    fmv       = math.floor(fmv_raw / 1_000_000) * 1_000_000
+    fmv       = round(fmv_raw / 1_000_000) * 1_000_000  # 上3桁: 百万単位四捨五入
 
     year_str    = str(data.get("year", ""))
     fy_end      = str(data.get("fiscal_year_end", "12/31"))
