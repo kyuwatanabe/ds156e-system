@@ -19,7 +19,7 @@
   header h1{font-size:15px;font-weight:500;}
   .version{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:3px;flex:1;}
 
-  .layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 48px);}
+  .layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 48px);min-height:0;}
 
   /* LEFT */
   .left{border-right:1px solid var(--border);display:flex;flex-direction:column;padding:16px;gap:14px;overflow:hidden;}
@@ -56,16 +56,19 @@
   .status.loading{background:rgba(255,140,66,.1);color:var(--warn);border:1px solid rgba(255,140,66,.3);display:flex;align-items:center;gap:8px;}
 
   /* RIGHT */
-  .right{display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto;}
+  .right{display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto;min-height:0;}
 
-  /* #9 form-style rows */
-  .form-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);}
-  .form-row:last-child{border-bottom:none;}
-  .form-lbl{font-size:13px;color:var(--text);min-width:260px;flex-shrink:0;}
-  .form-val{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:14px;padding:5px 9px;outline:none;transition:border-color .2s;width:180px;flex-shrink:0;}
+  /* #9 form-style rows - table layout */
+  .form-tbl{width:100%;border-collapse:collapse;}
+  .form-tbl tr{border-bottom:1px solid var(--border);}
+  .form-tbl tr:last-child{border-bottom:none;}
+  .form-tbl td{padding:9px 14px;vertical-align:middle;white-space:nowrap;}
+  .form-tbl td.lbl{font-size:13px;color:var(--text);width:300px;}
+  .form-tbl td.val{width:200px;}
+  .form-tbl td.tag{font-size:12px;color:var(--accent2);}
+  .form-val{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:14px;padding:5px 9px;outline:none;transition:border-color .2s;width:100%;}
   .form-val:focus{border-color:var(--accent);}
   .form-val.neg{color:var(--error);}
-  .form-tag{font-size:12px;color:var(--accent2);}
   .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:12px;}
   .empty .big{font-size:48px;opacity:.25;}
   .empty p{font-size:13px;}
@@ -172,33 +175,39 @@
       <!-- #9 -->
       <div class="rb">
         <div class="rh"><span class="badge b9">#9</span></div>
-        <div style="padding:4px 0;">
-          <div class="form-row">
-            <span class="form-lbl">Financial Statement for year</span>
-            <input class="form-val" id="f_year" type="text" oninput="recalc()">
-            <span class="form-tag">☑ Calendar Year</span>
-          </div>
-          <div class="form-row">
-            <span class="form-lbl">Total Assets of U.S. Business</span>
-            <input class="form-val" id="f_assets" type="text" oninput="recalc()">
-            <span class="form-tag">☑ Current Cash</span>
-          </div>
-          <div class="form-row">
-            <span class="form-lbl">Total Liabilities</span>
-            <input class="form-val" id="f_liabilities" type="text" oninput="recalc()">
-          </div>
-          <div class="form-row">
-            <span class="form-lbl">Owner's Equity*</span>
-            <input class="form-val" id="f_equity" type="text" oninput="recalc()">
-          </div>
-          <div class="form-row">
-            <span class="form-lbl">Total Annual Operating Income</span>
-            <span style="font-size:11px;color:var(--text2);margin-right:6px;">Before Taxes</span>
-            <input class="form-val" id="f_income_before" type="text" oninput="recalc()" style="width:130px;">
-            <span style="font-size:11px;color:var(--text2);margin:0 6px;">After Taxes</span>
-            <input class="form-val" id="f_income_after" type="text" oninput="recalc()" style="width:130px;">
-          </div>
-        </div>
+        <table class="form-tbl">
+          <tr>
+            <td class="lbl">Financial Statement for year</td>
+            <td class="val"><input class="form-val" id="f_year" type="text" oninput="recalc()"></td>
+            <td class="tag">☑ Calendar Year</td>
+          </tr>
+          <tr>
+            <td class="lbl">Total Assets of U.S. Business</td>
+            <td class="val"><input class="form-val" id="f_assets" type="text" oninput="recalc()"></td>
+            <td class="tag">☑ Current Cash</td>
+          </tr>
+          <tr>
+            <td class="lbl">Total Liabilities</td>
+            <td class="val"><input class="form-val" id="f_liabilities" type="text" oninput="recalc()"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="lbl">Owner's Equity*</td>
+            <td class="val"><input class="form-val" id="f_equity" type="text" oninput="recalc()"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="lbl">Total Annual Operating Income</td>
+            <td class="val" style="white-space:nowrap;">
+              <span style="font-size:11px;color:var(--text2);">Before Taxes</span>
+              <input class="form-val" id="f_income_before" type="text" oninput="recalc()" style="width:140px;margin-left:4px;">
+            </td>
+            <td class="tag" style="white-space:nowrap;">
+              <span style="font-size:11px;color:var(--text2);">After Taxes</span>
+              <input class="form-val" id="f_income_after" type="text" oninput="recalc()" style="width:140px;margin-left:4px;">
+            </td>
+          </tr>
+        </table>
         <div class="nb" id="notesBar"></div>
       </div>
 
@@ -406,7 +415,7 @@ function recalc() {
   const note = equity < 0
     ? `Owner's Equity が負 (${fmt(equity)}) のため\nTotal Assets (${fmt(assets)}) × 3`
     : `Owner's Equity (${fmt(equity)}) × 3`;
-  setText('f_fmv', fmt(fmv));
+  setText('f_fmv', fmtInt(fmv));  // 整数表示
   setText('f_fmv_note', note);
 
   if (extractedData) {
@@ -441,6 +450,13 @@ async function generatePdf() {
 function fmt(n) {
   if (n === null || n === undefined || isNaN(n)) return '—';
   const abs = Math.abs(n).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 });
+  return (n < 0 ? '-$' : '$') + abs;
+}
+
+function fmtInt(n) {
+  // 整数表示（小数なし）- FMV用
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  const abs = Math.abs(n).toLocaleString('en-US', { maximumFractionDigits:0 });
   return (n < 0 ? '-$' : '$') + abs;
 }
 

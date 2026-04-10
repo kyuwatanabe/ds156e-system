@@ -90,6 +90,7 @@ Required JSON format:
   "currency": "USD",
   "notes": "抽出時の特記事項があれば記載",
   "is_consolidated": false,
+  "fiscal_year_end": "12/31",
   "consolidated_note": "is_consolidated=trueの場合: 'BS:シート名、PL:シート名 — 〇〇として記載'。falseの場合は空文字",
   "cash_detail": "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54",
   "inventory_detail": "BS:YTD — Inventory (gross) $5,617,918.00 (Inventory Reserve は除外)",
@@ -101,6 +102,7 @@ Required JSON format:
 
 重要ルール:
 - is_consolidated: シート名・タイトル・勘定科目に「連結」「Consolidated」「合算」などが含まれる場合は true。単体（individual/standalone）のみ false。
+- fiscal_year_end: 財務諸表の決算日を "MM/DD" 形式で返す（例: "12/31", "03/31"）。12/31 の場合は Calendar Year、それ以外は Fiscal Year。
 - 各 detail フィールドには必ずシート種別とシート名を先頭に付けること。形式は「PL:シート名 — 」または「BS:シート名 — 」。損益計算書（Income Statement, P&L）から取得した値はPL:、貸借対照表（Balance Sheet）から取得した値はBS:とする。
 - 例: cash_detail → "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54"
 - 例: income_before_tax のdetailフィールドがあれば → "PL:YTD — Pre Tax Profit行から取得"
@@ -157,8 +159,13 @@ def fill_pdf(data: dict) -> bytes:
     other     = assets - cash - inventory - equipment - premises
     fmv       = assets * 3 if equity < 0 else equity * 3
 
+    year_str    = str(data.get("year", ""))
+    fy_end      = str(data.get("fiscal_year_end", "12/31"))
+    is_calendar = fy_end == "12/31"
+
     text_fields = {
-        "StateYr": str(data.get("year", "")),
+        "StateYr": year_str,
+        "Year":    year_str,
         "Assets":  format_usd(assets),
         "Liabil":  format_usd(liabil),
         "Equity":  format_usd(equity),
@@ -172,7 +179,11 @@ def fill_pdf(data: dict) -> bytes:
         "OthCum":  format_usd(other),
         "TotCum":  format_usd(assets),
     }
-    checkbox_fields = {"FinCY", "ExBus"}
+    # Calendar Year か Fiscal Year かを判定して追加
+    if is_calendar:
+        checkbox_fields = {"FinCY", "ExBus", "TotCY"}
+    else:
+        checkbox_fields = {"FinCY", "ExBus", "TotFY"}
 
     # テキストフィールド: update_page_form_field_values (auto_regenerate=False)
     for page in writer.pages:
