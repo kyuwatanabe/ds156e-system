@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS-156E 財務情報入力システム</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3150;
+    --accent: #4f7cff;
+    --accent2: #00d4aa;
+    --warn: #ff8c42;
+    --error: #ff6b6b;
+    --text: #e8eaf0;
+    --text2: #8b91a8;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Noto Sans JP', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: rgba(79,124,255,0.1);
+    border: 1px solid rgba(79,124,255,0.25);
+    padding: 4px 10px;
+    border-radius: 3px;
+  }
+
+  header h1 { font-size: 15px; font-weight: 500; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    height: calc(100vh - 53px);
+  }
+
+  /* LEFT PANEL */
+  .left-panel {
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 3px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* Upload */
+  .upload-zone {
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--bg);
+  }
+
+  .upload-zone:hover, .upload-zone.drag {
+    border-color: var(--accent);
+    background: rgba(79,124,255,0.05);
+  }
+
+  .upload-zone.ready {
+    border-color: var(--accent2);
+    background: rgba(0,212,170,0.05);
+  }
+
+  .upload-zone input { display: none; }
+
+  .upload-icon { font-size: 24px; margin-bottom: 6px; }
+
+  .upload-zone p {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  .upload-zone .filename {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    margin-top: 6px;
+    word-break: break-all;
+  }
+
+  /* Prompt editor */
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .toggle-btn {
+    font-size: 11px;
+    color: var(--accent);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: var(--mono);
+    transition: all 0.2s;
+  }
+
+  .toggle-btn:hover { border-color: var(--accent); }
+
+  #promptEditor {
+    width: 100%;
+    height: 320px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.6;
+    padding: 10px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  #promptEditor:focus { border-color: var(--accent); }
+
+  .prompt-hint {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 6px;
+  }
+
+  /* Extract button */
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover { background: #3d6aee; }
+  .btn-primary:disabled { background: var(--border); color: var(--text2); cursor: not-allowed; }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--accent2);
+    border: 1px solid var(--accent2);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .btn-secondary:hover { background: rgba(0,212,170,0.08); }
+  .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* RIGHT PANEL */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .state-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text2);
+    gap: 12px;
+  }
+
+  .state-empty .big-icon { font-size: 48px; opacity: 0.4; }
+  .state-empty p { font-size: 13px; }
+
+  /* Result cards */
+  .result-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .result-section-header {
+    background: var(--surface2);
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-section-header .badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .badge-9 { background: rgba(79,124,255,0.2); color: var(--accent); }
+  .badge-11 { background: rgba(0,212,170,0.2); color: var(--accent2); }
+  .badge-12 { background: rgba(255,140,66,0.2); color: var(--warn); }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .field-grid.single { grid-template-columns: 1fr; }
+  .field-grid.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field-cell {
+    background: var(--surface);
+    padding: 12px 16px;
+  }
+
+  .field-label {
+    font-size: 10px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .field-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 6px 10px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .field-input:focus { border-color: var(--accent); }
+  .field-input.negative { color: var(--error); }
+
+  .computed-value {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent2);
+    padding: 4px 0;
+  }
+
+  .computed-note {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 4px;
+  }
+
+  /* Notes */
+  .notes-box {
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--warn);
+    background: rgba(255,140,66,0.05);
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+  }
+
+  /* Loading */
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Status message */
+  .status-msg {
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 8px;
+    display: none;
+    font-family: var(--mono);
+  }
+
+  .status-msg.error { background: rgba(255,107,107,0.1); color: var(--error); border: 1px solid rgba(255,107,107,0.3); display: block; }
+  .status-msg.success { background: rgba(0,212,170,0.1); color: var(--accent2); border: 1px solid rgba(0,212,170,0.3); display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">GF // DS-156E</div>
+  <h1>財務情報入力システム</h1>
+</header>
+
+<div class="layout">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <!-- Excel Upload -->
+    <div class="section">
+      <div class="section-title">① Excelファイル</div>
+      <div class="upload-zone" id="excelZone" onclick="document.getElementById('excelInput').click()">
+        <input type="file" id="excelInput" accept=".xlsx,.xls" onchange="handleExcelSelect(this)">
+        <div class="upload-icon">📊</div>
+        <div style="font-weight:500;">財務諸表をアップロード</div>
+        <p>.xlsx / .xls</p>
+        <div class="filename" id="excelFilename"></div>
+      </div>
+    </div>
+
+    <!-- System Prompt Editor -->
+    <div class="section">
+      <div class="prompt-header">
+        <div class="section-title" style="margin-bottom:0">② システムプロンプト</div>
+        <button class="toggle-btn" onclick="togglePrompt()">折りたたむ</button>
+      </div>
+      <div id="promptArea" style="margin-top:10px">
+        <textarea id="promptEditor" spellcheck="false"></textarea>
+        <div class="prompt-hint">💡 # で始まる行はコメント（Claudeへの指示には含まれません）</div>
+      </div>
+    </div>
+
+    <!-- Extract Button -->
+    <div class="section">
+      <button class="btn-primary" id="extractBtn" onclick="extractData()" disabled>
+        <span>財務データを抽出</span>
+      </button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+    <!-- PDF Button -->
+    <div class="section">
+      <button class="btn-secondary" id="pdfBtn" onclick="generatePdf()" disabled>
+        📄 DS-156E PDF を出力
+      </button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel" id="rightPanel">
+    <div class="state-empty" id="emptyState">
+      <div class="big-icon">📋</div>
+      <p>Excelファイルをアップロードして「財務データを抽出」を押してください</p>
+    </div>
+
+    <!-- Results (hidden until data loaded) -->
+    <div id="resultsArea" style="display:none; display:flex; flex-direction:column; gap:20px;">
+
+      <!-- #9 Financial Statement -->
+      <div class="result-section">
+        <div class="result-section-header">
+          <span class="badge badge-9">#9</span>
+          Financial Statement
+        </div>
+        <div class="field-grid">
+          <div class="field-cell">
+            <div class="field-label">Year</div>
+            <input class="field-input" id="f_year" type="text" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Currency</div>
+            <input class="field-input" id="f_currency" type="text" readonly style="color:var(--text2)">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Total Assets</div>
+            <input class="field-input" id="f_assets" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Total Liabilities</div>
+            <input class="field-input" id="f_liabilities" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Owner's Equity</div>
+            <input class="field-input" id="f_equity" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell"></div>
+          <div class="field-cell">
+            <div class="field-label">Operating Income (Before Tax)</div>
+            <input class="field-input" id="f_income_before" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Operating Income (After Tax)</div>
+            <input class="field-input" id="f_income_after" type="number" oninput="recalculate()">
+          </div>
+        </div>
+        <div class="notes-box" id="f_notes" style="display:none"></div>
+      </div>
+
+      <!-- #11 Type of Investment -->
+      <div class="result-section">
+        <div class="result-section-header">
+          <span class="badge badge-11">#11</span>
+          Type of Investment — Continuation of an existing business
+        </div>
+        <div class="field-grid single">
+          <div class="field-cell">
+            <div class="field-label">Fair Market Value of Business（自動計算）</div>
+            <div class="computed-value" id="f_fmv">—</div>
+            <div class="computed-note" id="f_fmv_note"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- #12 Total Investment -->
+      <div class="result-section">
+        <div class="result-section-header">
+          <span class="badge badge-12">#12</span>
+          Total Investment from Abroad — Cumulative
+        </div>
+        <div class="field-grid">
+          <div class="field-cell">
+            <div class="field-label">Cash</div>
+            <input class="field-input" id="f_cash" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Inventory（グロス）</div>
+            <input class="field-input" id="f_inventory" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Equipment（グロス）</div>
+            <input class="field-input" id="f_equipment" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Premises</div>
+            <input class="field-input" id="f_premises" type="number" oninput="recalculate()">
+          </div>
+          <div class="field-cell">
+            <div class="field-label">Other（自動計算）</div>
+            <div class="computed-value" id="f_other">—</div>
+          </div>
+          <div class="field-cell">
+            <div class="field-label">TOTAL（= Total Assets）</div>
+            <div class="computed-value" id="f_total">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+let promptVisible = true;
+let extractedData = null;
+
+// デフォルトプロンプトを読み込む
+fetch('/default-prompt')
+  .then(r => r.json())
+  .then(d => { document.getElementById('promptEditor').value = d.prompt; });
+
+function togglePrompt() {
+  const area = document.getElementById('promptArea');
+  const btn = document.querySelector('.toggle-btn');
+  promptVisible = !promptVisible;
+  area.style.display = promptVisible ? 'block' : 'none';
+  btn.textContent = promptVisible ? '折りたたむ' : '展開する';
+}
+
+function handleExcelSelect(input) {
+  if (input.files.length > 0) {
+    const zone = document.getElementById('excelZone');
+    zone.classList.add('ready');
+    document.getElementById('excelFilename').textContent = input.files[0].name;
+    document.getElementById('extractBtn').disabled = false;
+  }
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  el.className = 'status-msg ' + type;
+}
+
+async function extractData() {
+  const fileInput = document.getElementById('excelInput');
+  if (!fileInput.files.length) return;
+
+  const btn = document.getElementById('extractBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div><span>抽出中...</span>';
+  setStatus('', '');
+
+  const formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  formData.append('system_prompt', document.getElementById('promptEditor').value);
+
+  try {
+    const res = await fetch('/extract', { method: 'POST', body: formData });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'エラーが発生しました');
+    }
+    const data = await res.json();
+    displayData(data);
+    setStatus('✓ 抽出完了', 'success');
+    document.getElementById('pdfBtn').disabled = false;
+  } catch (e) {
+    setStatus('エラー: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>財務データを抽出</span>';
+  }
+}
+
+function displayData(data) {
+  extractedData = data;
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultsArea').style.display = 'flex';
+
+  document.getElementById('f_year').value = data.year || '';
+  document.getElementById('f_currency').value = data.currency || 'USD';
+  document.getElementById('f_assets').value = data.total_assets || 0;
+  document.getElementById('f_liabilities').value = data.total_liabilities || 0;
+  document.getElementById('f_equity').value = data.owners_equity || 0;
+  document.getElementById('f_income_before').value = data.income_before_tax || 0;
+  document.getElementById('f_income_after').value = data.income_after_tax || 0;
+  document.getElementById('f_cash').value = data.cash || 0;
+  document.getElementById('f_inventory').value = data.inventory || 0;
+  document.getElementById('f_equipment').value = data.equipment || 0;
+  document.getElementById('f_premises').value = data.premises || 0;
+
+  if (data.notes) {
+    const notesEl = document.getElementById('f_notes');
+    notesEl.textContent = '⚠ ' + data.notes;
+    notesEl.style.display = 'block';
+  }
+
+  recalculate();
+}
+
+function fmt(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  const abs = Math.abs(n);
+  const s = '$' + abs.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  return n < 0 ? '-' + s : s;
+}
+
+function recalculate() {
+  const assets = parseFloat(document.getElementById('f_assets').value) || 0;
+  const equity = parseFloat(document.getElementById('f_equity').value) || 0;
+  const cash = parseFloat(document.getElementById('f_cash').value) || 0;
+  const inventory = parseFloat(document.getElementById('f_inventory').value) || 0;
+  const equipment = parseFloat(document.getElementById('f_equipment').value) || 0;
+  const premises = parseFloat(document.getElementById('f_premises').value) || 0;
+
+  // #11 Fair Market Value
+  let fmv, fmvNote;
+  if (equity < 0) {
+    fmv = assets * 3;
+    fmvNote = 'Owner\'s Equityがマイナスのため Total Assets × 3';
+  } else {
+    fmv = equity * 3;
+    fmvNote = 'Owner\'s Equity × 3';
+  }
+  document.getElementById('f_fmv').textContent = fmt(fmv);
+  document.getElementById('f_fmv_note').textContent = fmvNote;
+
+  // #12 Other & Total
+  const other = assets - cash - inventory - equipment - premises;
+  document.getElementById('f_other').textContent = fmt(other);
+  document.getElementById('f_total').textContent = fmt(assets);
+
+  // Equityが負の場合は赤色
+  const equityInput = document.getElementById('f_equity');
+  equityInput.classList.toggle('negative', equity < 0);
+
+  // extractedDataを更新
+  if (extractedData) {
+    extractedData.total_assets = assets;
+    extractedData.owners_equity = equity;
+    extractedData.total_liabilities = parseFloat(document.getElementById('f_liabilities').value) || 0;
+    extractedData.income_before_tax = parseFloat(document.getElementById('f_income_before').value) || 0;
+    extractedData.income_after_tax = parseFloat(document.getElementById('f_income_after').value) || 0;
+    extractedData.cash = cash;
+    extractedData.inventory = inventory;
+    extractedData.equipment = equipment;
+    extractedData.premises = premises;
+    extractedData.year = document.getElementById('f_year').value;
+  }
+}
+
+async function generatePdf() {
+  if (!extractedData) return;
+
+  const btn = document.getElementById('pdfBtn');
+  btn.disabled = true;
+  btn.textContent = '生成中...';
+
+  try {
+    const res = await fetch('/generate-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(extractedData),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail);
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ds156e_filled.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    setStatus('PDF生成エラー: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '📄 DS-156E PDF を出力';
+  }
+}
+</script>
+</body>
+</html>
