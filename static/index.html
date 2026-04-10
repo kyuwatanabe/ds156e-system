@@ -64,16 +64,19 @@
   .dt tr:last-child{border-bottom:none;}
   .dt tr.tot{background:var(--surface2);}
   .dt td{padding:10px 14px;vertical-align:middle;}
-  /* ラベルセル: border-leftで青棒 */
-  .dt td.dl{
+  /* ラベルセル */
+  .dt td.dl,.dt td.dl11,.dt td.dl12{
     font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-    color:var(--text2);border-left:3px solid var(--accent);padding-left:12px;
-    white-space:nowrap;
+    color:var(--text2);padding-left:12px;white-space:nowrap;
+    width:280px;  /* 固定幅で数値の横位置を揃える */
   }
+  .dt td.dl  {border-left:3px solid var(--accent);}   /* #9: 青 */
+  .dt td.dl11{border-left:3px solid var(--accent2);}  /* #11: 緑 */
+  .dt td.dl12{border-left:3px solid var(--warn);}     /* #12: オレンジ */
   /* 値セル */
   .dt td.dv{
     font-family:var(--mono);font-size:15px;font-weight:600;
-    color:var(--text);text-align:right;white-space:nowrap;min-width:180px;
+    color:var(--text);text-align:right;white-space:nowrap;width:200px;
   }
   .dt td.dv.neg{color:var(--error);}
   /* 補足セル */
@@ -84,8 +87,7 @@
   .dt-inp{
     background:transparent;border:none;outline:none;
     font-family:var(--mono);font-size:15px;font-weight:600;
-    color:var(--text);text-align:right;width:100%;padding:0;
-    cursor:text;
+    color:var(--text);text-align:right;width:100%;padding:0;cursor:text;
   }
   .dt-inp.neg{color:var(--error);}
   .dt-inp:focus{color:var(--accent);}
@@ -226,7 +228,7 @@
         <div class="rh"><span class="badge b11">#11</span></div>
         <table class="dt">
           <tr>
-            <td class="dl">Fair Market Value of Business</td>
+            <td class="dl11">Fair Market Value of Business</td>
             <td class="dv" id="f_fmv">—</td>
             <td class="dn" id="f_fmv_note" style="white-space:pre-line;"></td>
           </tr>
@@ -237,12 +239,12 @@
       <div class="rb">
         <div class="rh"><span class="badge b12">#12</span></div>
         <table class="dt">
-          <tr><td class="dl">Cash</td>     <td class="dv" id="d_cash">—</td><td class="dn" id="s_cash"></td></tr>
-          <tr><td class="dl">Inventory</td><td class="dv" id="d_inv">—</td> <td class="dn" id="s_inv"></td></tr>
-          <tr><td class="dl">Equipment</td><td class="dv" id="d_eqp">—</td> <td class="dn" id="s_eqp"></td></tr>
-          <tr><td class="dl">Premises</td> <td class="dv" id="d_pre">—</td> <td class="dn" id="s_pre"></td></tr>
-          <tr><td class="dl">Other</td>    <td class="dv" id="d_oth">—</td> <td class="dn" id="s_oth"></td></tr>
-          <tr class="tot"><td class="dl" style="border-left-color:var(--accent2);">Total</td><td class="dv" id="d_tot" style="color:var(--accent2);">—</td><td class="dn" id="s_tot"></td></tr>
+          <tr><td class="dl12">Cash</td>     <td class="dv" id="d_cash">—</td><td class="dn" id="s_cash"></td></tr>
+          <tr><td class="dl12">Inventory</td><td class="dv" id="d_inv">—</td> <td class="dn" id="s_inv"></td></tr>
+          <tr><td class="dl12">Equipment</td><td class="dv" id="d_eqp">—</td> <td class="dn" id="s_eqp"></td></tr>
+          <tr><td class="dl12">Premises</td> <td class="dv" id="d_pre">—</td> <td class="dn" id="s_pre"></td></tr>
+          <tr><td class="dl12">Other</td>    <td class="dv" id="d_oth">—</td> <td class="dn" id="s_oth"></td></tr>
+          <tr class="tot"><td class="dl12">Total</td><td class="dv" id="d_tot">—</td><td class="dn" id="s_tot"></td></tr>
         </table>
       </div>
 
@@ -346,18 +348,14 @@ function displayData(data) {
   // シート情報 / 連結警告
   const warn = document.getElementById('consolidatedWarn');
   const note = data.consolidated_note || '';
-  if (note) {
-    warn.style.display = 'flex';
-    document.getElementById('consolidatedNote').textContent = note;
-    if (data.is_consolidated) {
-      warn.classList.add('consolidated');
-      document.getElementById('warnIcon').textContent = '⚠️';
-    } else {
-      warn.classList.remove('consolidated');
-      document.getElementById('warnIcon').textContent = '';
-    }
+  warn.style.display = 'flex';
+  document.getElementById('consolidatedNote').textContent = note;
+  if (data.is_consolidated) {
+    warn.classList.add('consolidated');
+    document.getElementById('warnIcon').textContent = '⚠️';
   } else {
-    warn.style.display = 'none';
+    warn.classList.remove('consolidated');
+    document.getElementById('warnIcon').textContent = '';
   }
 
   // #9
