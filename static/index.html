@@ -56,7 +56,16 @@
   .status.loading{background:rgba(255,140,66,.1);color:var(--warn);border:1px solid rgba(255,140,66,.3);display:flex;align-items:center;gap:8px;}
 
   /* RIGHT */
-  .right{display:flex;flex-direction:column;padding:16px;gap:12px;overflow:hidden;}
+  .right{display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto;}
+
+  /* #9 form-style rows */
+  .form-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--border);}
+  .form-row:last-child{border-bottom:none;}
+  .form-lbl{font-size:13px;color:var(--text);min-width:260px;flex-shrink:0;}
+  .form-val{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:14px;padding:5px 9px;outline:none;transition:border-color .2s;width:180px;flex-shrink:0;}
+  .form-val:focus{border-color:var(--accent);}
+  .form-val.neg{color:var(--error);}
+  .form-tag{font-size:12px;color:var(--accent2);}
   .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text2);gap:12px;}
   .empty .big{font-size:48px;opacity:.25;}
   .empty p{font-size:13px;}
@@ -155,7 +164,7 @@
     <!-- CONSOLIDATED WARNING -->
     <div class="consolidated-warn" id="consolidatedWarn">
       <span class="warn-icon">⚠️</span>
-      <span>単体の財務諸表か確認してください：</span><span id="consolidatedNote"></span>
+      <span id="consolidatedNote" style="white-space:pre-line;"></span>
     </div>
 
     <div id="resultsArea" style="display:none;flex-direction:column;gap:12px;">
@@ -163,37 +172,32 @@
       <!-- #9 -->
       <div class="rb">
         <div class="rh"><span class="badge b9">#9</span></div>
-        <!-- Row 1: Year + Calendar Year -->
-        <div class="frow c2">
-          <div class="fc">
-            <div class="fl">Financial Statement for year</div>
-            <input class="fi" id="f_year" type="text" oninput="recalc()">
+        <div style="padding:4px 0;">
+          <div class="form-row">
+            <span class="form-lbl">Financial Statement for year</span>
+            <input class="form-val" id="f_year" type="text" oninput="recalc()">
+            <span class="form-tag">☑ Calendar Year</span>
           </div>
-          <div class="fc" style="display:flex;align-items:flex-end;padding-bottom:12px;">
-            <span style="font-size:13px;color:var(--accent2);font-weight:500;">☑ Calendar Year</span>
+          <div class="form-row">
+            <span class="form-lbl">Total Assets of U.S. Business</span>
+            <input class="form-val" id="f_assets" type="text" oninput="recalc()">
+            <span class="form-tag">☑ Current Cash</span>
           </div>
-        </div>
-        <!-- Row 2: Total Assets -->
-        <div class="frow c2">
-          <div class="fc"><div class="fl">Total Assets of U.S. Business</div><input class="fi" id="f_assets" type="text" oninput="recalc()"></div>
-          <div class="fc" style="display:flex;align-items:flex-end;padding-bottom:12px;">
-            <span style="font-size:12px;color:var(--text2);">☑ Current Cash</span>
+          <div class="form-row">
+            <span class="form-lbl">Total Liabilities</span>
+            <input class="form-val" id="f_liabilities" type="text" oninput="recalc()">
           </div>
-        </div>
-        <!-- Row 3: Total Liabilities -->
-        <div class="frow" style="grid-template-columns:1fr 1fr;">
-          <div class="fc"><div class="fl">Total Liabilities</div><input class="fi" id="f_liabilities" type="text" oninput="recalc()"></div>
-          <div class="fc"></div>
-        </div>
-        <!-- Row 4: Owner's Equity -->
-        <div class="frow" style="grid-template-columns:1fr 1fr;">
-          <div class="fc"><div class="fl">Owner's Equity*</div><input class="fi" id="f_equity" type="text" oninput="recalc()"></div>
-          <div class="fc"></div>
-        </div>
-        <!-- Row 5: Operating Income Before/After Tax -->
-        <div class="frow c2">
-          <div class="fc"><div class="fl">Total Annual Operating Income — Before Taxes</div><input class="fi" id="f_income_before" type="text" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">After Taxes</div><input class="fi" id="f_income_after" type="text" oninput="recalc()"></div>
+          <div class="form-row">
+            <span class="form-lbl">Owner's Equity*</span>
+            <input class="form-val" id="f_equity" type="text" oninput="recalc()">
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">Total Annual Operating Income</span>
+            <span style="font-size:11px;color:var(--text2);margin-right:6px;">Before Taxes</span>
+            <input class="form-val" id="f_income_before" type="text" oninput="recalc()" style="width:130px;">
+            <span style="font-size:11px;color:var(--text2);margin:0 6px;">After Taxes</span>
+            <input class="form-val" id="f_income_after" type="text" oninput="recalc()" style="width:130px;">
+          </div>
         </div>
         <div class="nb" id="notesBar"></div>
       </div>

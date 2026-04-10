@@ -131,10 +131,10 @@ def extract_system_prompt(raw_prompt: str) -> str:
 
 
 def format_usd(value: float) -> str:
-    """数値をDS-156E用のフォーマット（$なし、小数2位）"""
+    """数値をDS-156E用のフォーマット（$なし、コンマなし、小数2位）"""
     if value < 0:
-        return f"-{abs(value):,.2f}"
-    return f"{value:,.2f}"
+        return f"-{abs(value):.2f}"
+    return f"{value:.2f}"
 
 
 def fill_pdf(data: dict) -> bytes:
