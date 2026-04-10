@@ -91,7 +91,7 @@ Required JSON format:
   "notes": "抽出時の特記事項があれば記載",
   "is_consolidated": false,
   "fiscal_year_end": "12/31",
-  "consolidated_note": "is_consolidated=trueの場合: 'BS:シート名、PL:シート名 — 〇〇として記載'。falseの場合は空文字",
+  "consolidated_note": "BS:YTD、PL:YTD\nYTDにConsolidatedの記載",
   "cash_detail": "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54",
   "inventory_detail": "BS:YTD — Inventory (gross) $5,617,918.00 (Inventory Reserve は除外)",
   "equipment_detail": "BS:YTD — Plant & Equipment (gross) $6,546,970.00 (Accumulated Depreciation は除外)",
@@ -107,7 +107,12 @@ Required JSON format:
 - 例: cash_detail → "BS:YTD — Petty Cash $7,143.53 + Cash-Bank $2,330,325.54"
 - 例: income_before_tax のdetailフィールドがあれば → "PL:YTD — Pre Tax Profit行から取得"
 - total_assets_detail → "BS:YTD — Total Assets行から直接取得 $61,913,640.00"
-- is_consolidated が true の場合、consolidated_note には「BS:シート名、PL:シート名 — 〇〇として記載」の形式で記載する。シート名は実際にBS/PLのデータを取得したシートのみを記載すること（他のシートのシート名は含めない）。連結と判断した根拠（例：Consolidated Income Statement として記載）のみを簡潔に示す。
+- consolidated_note の形式:
+  - is_consolidated=true の場合: 1行目に「BS:シート名、PL:シート名」、改行して2行目に「シート名にConsolidatedの記載」
+    例: "BS:YTD、PL:YTD\nYTDにConsolidatedの記載"
+  - is_consolidated=false の場合: 「BS:シート名、PL:シート名」のみ（改行・2行目なし）
+    例: "BS:YTD、PL:YTD"
+  - シート名は実際にBS/PLデータを取得したシートのみ。関係ないシートは含めない。
 - total_assets_detail など各detailフィールドのシート名も、実際にその数値を取得したシートのみを記載する。関係のないシートのシート名を含めないこと。
 - total_assets は必ずバランスシートの「Total Assets」行から直接取得すること。Cash+Inventory+Equipment+Premises+Other の合算で計算しないこと。
 - 金額はすべて小数第2位まで（例: 61913640.12）

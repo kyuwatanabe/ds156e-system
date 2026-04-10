@@ -182,7 +182,7 @@
     <!-- SHEET INFO / CONSOLIDATED WARNING -->
     <div class="sheet-info" id="consolidatedWarn" style="display:none;">
       <span class="warn-icon" id="warnIcon"></span>
-      <span id="consolidatedNote"></span>
+      <span id="consolidatedNote" style="white-space:pre-line;"></span>
     </div>
 
     <div id="resultsArea" style="display:none;flex-direction:column;gap:12px;">
@@ -239,6 +239,11 @@
       <div class="rb">
         <div class="rh"><span class="badge b12">#12</span></div>
         <table class="dt">
+          <tr>
+            <td class="dl12">For Year</td>
+            <td class="dv" id="d12_year">—</td>
+            <td class="dn" id="d12_cal"></td>
+          </tr>
           <tr><td class="dl12">Cash</td>     <td class="dv" id="d_cash">—</td><td class="dn" id="s_cash"></td></tr>
           <tr><td class="dl12">Inventory</td><td class="dv" id="d_inv">—</td> <td class="dn" id="s_inv"></td></tr>
           <tr><td class="dl12">Equipment</td><td class="dv" id="d_eqp">—</td> <td class="dn" id="s_eqp"></td></tr>
@@ -289,12 +294,33 @@ zone.addEventListener('drop', e => {
 
 function acceptFile(file) {
   selectedFile = file;
+  extractedData = null;
   zone.classList.add('has-file');
   const fn = document.getElementById('uploadFn');
   fn.textContent = '📎 ' + file.name;
   fn.classList.add('show');
   setStatus('', '');
+  // 前の結果をクリア
+  clearResults();
   extractData();
+}
+
+function clearResults() {
+  // #9
+  ['f_year','f_assets','f_liabilities','f_equity','f_income_before','f_income_after'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  // #11
+  setText('f_fmv', '—'); setText('f_fmv_note', '');
+  // #12
+  ['d_cash','d_inv','d_eqp','d_pre','d_oth','d_tot'].forEach(id => setText(id,'—'));
+  ['s_cash','s_inv','s_eqp','s_pre'].forEach(id => setText(id,''));
+  setText('d12_year','—'); setText('d12_cal','—');
+  // 連結表示
+  document.getElementById('consolidatedWarn').style.display = 'none';
+  document.getElementById('pdfBtn').disabled = true;
+  document.getElementById('sendBtn').disabled = true;
 }
 
 // ── Extract (file upload) ────────────────────────────
@@ -380,6 +406,11 @@ function displayData(data) {
   setText('d_pre',  fmt(pre));   renderSrc('s_pre',  data.premises_detail);
   setText('d_oth',  fmt(oth));   // Other備考不要
   setText('d_tot',  fmt(assets)); document.getElementById('s_tot').textContent = '';
+
+  // #12 FOR YEAR
+  const fyEnd = data.fiscal_year_end || '12/31';
+  setText('d12_year', data.year || '—');
+  setText('d12_cal', fyEnd === '12/31' ? '☑ Calendar Year' : '☑ Fiscal Year  (FY ends ' + fyEnd + ')');
 
   recalc();
 }
