@@ -15,10 +15,9 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:var(--bg);color:var(--text);font-family:var(--sans);height:100vh;overflow:hidden;font-size:14px;line-height:1.55;}
 
-  header{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;gap:14px;height:48px;}
-  .logo{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;background:rgba(79,124,255,.1);border:1px solid rgba(79,124,255,.25);padding:4px 10px;border-radius:3px;flex-shrink:0;}
-  header h1{font-size:15px;font-weight:500;flex:1;}
-  .version{font-family:var(--mono);font-size:11px;color:var(--text2);background:var(--surface2);border:1px solid var(--border);padding:3px 10px;border-radius:3px;}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;gap:10px;height:48px;}
+  header h1{font-size:15px;font-weight:500;}
+  .version{font-family:var(--mono);font-size:11px;color:var(--text2);}
 
   .layout{display:grid;grid-template-columns:360px 1fr;height:calc(100vh - 48px);}
 
@@ -58,19 +57,9 @@
   .empty p{font-size:13px;}
 
   /* CONSOLIDATED WARNING */
-  .consolidated-warn{
-    background:rgba(255,107,107,.12);
-    border:2px solid var(--error);
-    border-radius:8px;
-    padding:14px 18px;
-    display:none;
-    flex-shrink:0;
-  }
-  .consolidated-warn.show{display:flex;align-items:flex-start;gap:14px;}
-  .warn-icon{font-size:28px;flex-shrink:0;line-height:1;}
-  .warn-body{}
-  .warn-title{font-size:14px;font-weight:600;color:var(--error);}
-  .warn-note{font-size:13px;color:#ffb3b3;margin-top:3px;font-family:var(--mono);}
+  .consolidated-warn{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.4);border-radius:6px;padding:10px 14px;display:none;flex-shrink:0;align-items:center;gap:8px;font-size:13px;color:#ffb3b3;}
+  .consolidated-warn.show{display:flex;}
+  .warn-icon{font-size:16px;flex-shrink:0;}
 
   /* RESULT BLOCKS */
   .rb{background:var(--surface);border:1px solid var(--border);border-radius:7px;overflow:hidden;flex-shrink:0;}
@@ -116,9 +105,8 @@
 <body>
 
 <header>
-  <div class="logo">GF // DS-156E</div>
   <h1>財務情報入力システム</h1>
-  <div class="version">v1.3 · 2026-04-10</div>
+  <div class="version" id="versionLabel"></div>
 </header>
 
 <div class="layout">
@@ -159,11 +147,8 @@
 
     <!-- CONSOLIDATED WARNING -->
     <div class="consolidated-warn" id="consolidatedWarn">
-      <div class="warn-icon">⚠️</div>
-      <div class="warn-body">
-        <div class="warn-title">連結財務諸表か確認してください</div>
-        <div class="warn-note" id="consolidatedNote"></div>
-      </div>
+      <span class="warn-icon">⚠️</span>
+      <span>連結財務諸表か確認してください： </span><span id="consolidatedNote"></span>
     </div>
 
     <div id="resultsArea" style="display:none;flex-direction:column;gap:12px;">
@@ -231,6 +216,16 @@
 </div>
 
 <script>
+// Version: MM/DD HH:MM
+(function(){
+  const now = new Date();
+  const mm = String(now.getMonth()+1).padStart(2,'0');
+  const dd = String(now.getDate()).padStart(2,'0');
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mi = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('versionLabel').textContent = `v1.3  ${mm}/${dd} ${hh}:${mi}`;
+})();
+
 let selectedFile = null;
 let extractedData = null;
 
