@@ -163,15 +163,37 @@
       <!-- #9 -->
       <div class="rb">
         <div class="rh"><span class="badge b9">#9</span></div>
-        <div class="frow c3">
-          <div class="fc"><div class="fl">Year</div><input class="fi" id="f_year" type="text" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Before Tax Income</div><input class="fi" id="f_income_before" type="text" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">After Tax Income</div><input class="fi" id="f_income_after" type="text" oninput="recalc()"></div>
+        <!-- Row 1: Year + Calendar Year -->
+        <div class="frow c2">
+          <div class="fc">
+            <div class="fl">Financial Statement for year</div>
+            <input class="fi" id="f_year" type="text" oninput="recalc()">
+          </div>
+          <div class="fc" style="display:flex;align-items:flex-end;padding-bottom:12px;">
+            <span style="font-size:13px;color:var(--accent2);font-weight:500;">☑ Calendar Year</span>
+          </div>
         </div>
-        <div class="frow c3">
-          <div class="fc"><div class="fl">Total Assets</div><input class="fi" id="f_assets" type="text" oninput="recalc()"></div>
+        <!-- Row 2: Total Assets -->
+        <div class="frow c2">
+          <div class="fc"><div class="fl">Total Assets of U.S. Business</div><input class="fi" id="f_assets" type="text" oninput="recalc()"></div>
+          <div class="fc" style="display:flex;align-items:flex-end;padding-bottom:12px;">
+            <span style="font-size:12px;color:var(--text2);">☑ Current Cash</span>
+          </div>
+        </div>
+        <!-- Row 3: Total Liabilities -->
+        <div class="frow" style="grid-template-columns:1fr 1fr;">
           <div class="fc"><div class="fl">Total Liabilities</div><input class="fi" id="f_liabilities" type="text" oninput="recalc()"></div>
-          <div class="fc"><div class="fl">Owner's Equity</div><input class="fi" id="f_equity" type="text" oninput="recalc()"></div>
+          <div class="fc"></div>
+        </div>
+        <!-- Row 4: Owner's Equity -->
+        <div class="frow" style="grid-template-columns:1fr 1fr;">
+          <div class="fc"><div class="fl">Owner's Equity*</div><input class="fi" id="f_equity" type="text" oninput="recalc()"></div>
+          <div class="fc"></div>
+        </div>
+        <!-- Row 5: Operating Income Before/After Tax -->
+        <div class="frow c2">
+          <div class="fc"><div class="fl">Total Annual Operating Income — Before Taxes</div><input class="fi" id="f_income_before" type="text" oninput="recalc()"></div>
+          <div class="fc"><div class="fl">After Taxes</div><input class="fi" id="f_income_after" type="text" oninput="recalc()"></div>
         </div>
         <div class="nb" id="notesBar"></div>
       </div>

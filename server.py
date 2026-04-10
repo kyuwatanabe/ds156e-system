@@ -131,10 +131,10 @@ def extract_system_prompt(raw_prompt: str) -> str:
 
 
 def format_usd(value: float) -> str:
-    """数値をDS-156E用のドル表示にフォーマット"""
+    """数値をDS-156E用のフォーマット（$なし、小数2位）"""
     if value < 0:
-        return f"-${abs(value):,.0f}"
-    return f"${value:,.0f}"
+        return f"-{abs(value):,.2f}"
+    return f"{value:,.2f}"
 
 
 def fill_pdf(data: dict) -> bytes:
@@ -191,6 +191,11 @@ def fill_pdf(data: dict) -> bytes:
             if field_name in checkbox_fields:
                 annot[NameObject("/V")]  = NameObject("/Yes")
                 annot[NameObject("/AS")] = NameObject("/Yes")
+
+    # PDFを編集可能にする
+    from pypdf.generic import BooleanObject
+    if "/AcroForm" in writer._root_object:
+        writer._root_object["/AcroForm"][NameObject("/NeedAppearances")] = BooleanObject(True)
 
     output = io.BytesIO()
     writer.write(output)
